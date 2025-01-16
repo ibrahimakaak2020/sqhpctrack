@@ -1,0 +1,19 @@
+UI Design Suggestions
+1. User Management
+User List Page: Display a table with user details (staffno, staffname, isadmin, created_at, updated_at). Include buttons for adding, editing, and deleting users.
+User Form Page: A form to add or edit user details (staffname, password, isadmin).
+2. CompanyUser Management
+CompanyUser List Page: Display a table with company user details (cid, staffname, companyname_en, companyname_ar, contactnumber). Include buttons for adding, editing, and deleting company users.
+CompanyUser Form Page: A form to add or edit company user details (staffname, companyname_en, companyname_ar, contactnumber).
+3. Workshop Management
+Workshop List Page: Display a table with workshop details (id, workshopname, building, contact). Include buttons for adding, editing, and deleting workshops.
+Workshop Form Page: A form to add or edit workshop details (workshopname, building, contact).
+4. Equipment Management
+Equipment List Page: Display a table with equipment details (sn, model_name, equipment_type, manufacturer, locname, building, note, created_at, created_by). Include buttons for adding, editing, and deleting equipment.
+Equipment Form Page: A form to add or edit equipment details (sn, model_name, equipment_type, manufacturer, locname, building, note, created_by).
+5. MaintenanceRecord Management
+MaintenanceRecord List Page: Display a table with maintenance record details (id, equipment_sn, registered_by, maintenance_date, isactive, problem_description). Include buttons for adding, editing, and deleting maintenance records.
+MaintenanceRecord Form Page: A form to add or edit maintenance record details (equipment_sn, registered_by, maintenance_date, isactive, problem_description).
+6. MaintenanceStatus Management
+MaintenanceStatus List Page: Display a table with maintenance status details (id, maintenance_id, workshop_id, company_id, status_date, status, is_external, notes, register_by). Include buttons for adding, editing, and deleting maintenance statuses.
+MaintenanceStatus Form Page: A form to add or edit maintenance status details (maintenance_id, workshop_id, company_id, status_date, status, is_external, notes, register_by).
