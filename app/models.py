@@ -1,6 +1,6 @@
 from datetime import datetime, timezone
 from flask_login import UserMixin
-from db.database import db, login_manager
+from app.db.database import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
@@ -18,9 +18,11 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return str(self.staffno)
 
-    def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+    @classmethod
+    def set_password(cls, password):
+        return generate_password_hash(password)
 
+    @classmethod
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 

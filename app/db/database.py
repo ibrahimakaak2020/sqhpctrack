@@ -14,12 +14,13 @@ def init_db(app):
     migrate.init_app(app, db)
     
     # Configure Flask-Login
-    login_manager.login_view = 'user.get_users'
-    login_manager.login_message_category = 'info'
+    #login_manager.login_view = 'user.get_users'
+    #login_manager.login_message_category = 'info'
     
     # Create tables if they don't exist
-    with app.app_context():
-        db.create_all()
+    # with app.app_context():
+    #     db.create_all()
+    #     print("Database tables created")
 
 @login_manager.user_loader
 def load_user(user_id):

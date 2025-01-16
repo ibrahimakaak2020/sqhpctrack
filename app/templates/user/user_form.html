@@ -1,0 +1,20 @@
+         <h2>{{ 'Edit User' if form.staffname.data else 'Add User' }}</h2>
+         <form action="{{ url_for('user.add_user') }}" method="post">
+                {{ form.hidden_tag() }}
+                <div>
+                    {{ form.staffno.label }} {{ form.staffno(size=32) }}
+                </div>
+                <div>
+                    {{ form.staffname.label }} {{ form.staffname(size=32) }}
+                </div>
+                <div>
+                    {{ form.password.label }} {{ form.password(size=32) }}
+                </div>
+                <div>
+                    {{ form.isadmin.label }} {{ form.isadmin() }}
+                </div>
+                <div>
+                    {{ form.submit() }}
+                </div>
+            </form>
+       
