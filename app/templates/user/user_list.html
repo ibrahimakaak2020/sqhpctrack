@@ -63,15 +63,13 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="editUserForm" method="post">
-          <!-- Form fields will be populated by JavaScript -->
-        </form>
+        {% include 'user/user_form.html' %}
       </div>
     </div>
   </div>
 </div>
 
-<!-- View User Modal -->
+<!-- View User Modal -->  
 <div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -82,76 +80,27 @@
         </button>
       </div>
       <div class="modal-body">
-        <form id="viewUserForm">
-          <!-- Form fields will be populated by JavaScript -->
-        </form>
+        {% include 'user/user_view.html' %}
       </div>
     </div>
   </div>
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    $('#editUserModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var staffno = button.data('staffno');
-        var staffname = button.data('staffname');
-        var isadmin = button.data('isadmin');
+  $('#viewUserModal').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget); // Button that triggered the modal
+    var staffno = button.data('staffno');
+    var staffname = button.data('staffname');
+    var isadmin = button.data('isadmin');
+    var createdAt = button.data('created_at');
+    var updatedAt = button.data('updated_at');
 
-        var modal = $(this);
-        var form = modal.find('#editUserForm');
-        form.attr('action', '/user/edit/' + staffno);
-        form.html(`
-            <div class="form-group">
-                <label for="staffno">Staff No</label>
-                <input type="text" class="form-control" id="staffno" name="staffno" value="${staffno}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="staffname">Staff Name</label>
-                <input type="text" class="form-control" id="staffname" name="staffname" value="${staffname}">
-            </div>
-            <div class="form-group">
-                <label for="isadmin">Is Admin</label>
-                <input type="checkbox" class="form-control" id="isadmin" name="isadmin" ${isadmin ? 'checked' : ''}>
-            </div>
-            <button type="submit" class="btn btn-primary">Save changes</button>
-        `);
-    });
-
-    $('#viewUserModal').on('show.bs.modal', function (event) {
-        var button = $(event.relatedTarget);
-        var staffno = button.data('staffno');
-        var staffname = button.data('staffname');
-        var isadmin = button.data('isadmin');
-        var created_at = button.data('created_at');
-        var updated_at = button.data('updated_at');
-
-        var modal = $(this);
-        var form = modal.find('#viewUserForm');
-        form.html(`
-            <div class="form-group">
-                <label for="staffno">Staff No</label>
-                <input type="text" class="form-control" id="staffno" name="staffno" value="${staffno}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="staffname">Staff Name</label>
-                <input type="text" class="form-control" id="staffname" name="staffname" value="${staffname}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="isadmin">Is Admin</label>
-                <input type="checkbox" class="form-control" id="isadmin" name="isadmin" ${isadmin ? 'checked' : ''} disabled>
-            </div>
-            <div class="form-group">
-                <label for="created_at">Created At</label>
-                <input type="text" class="form-control" id="created_at" name="created_at" value="${created_at}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="updated_at">Updated At</label>
-                <input type="text" class="form-control" id="updated_at" name="updated_at" value="${updated_at}" readonly>
-            </div>
-        `);
-    });
-});
+    var modal = $(this);
+    modal.find('.modal-body #staffno').text(staffno);
+    modal.find('.modal-body #staffname').text(staffname);
+    modal.find('.modal-body #isadmin').text(isadmin);
+    modal.find('.modal-body #created_at').text(createdAt);
+    modal.find('.modal-body #updated_at').text(updatedAt);
+  });
 </script>
 {% endblock %}
-
