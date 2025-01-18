@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
+from flask_wtf import CSRFProtect
 
 from app.config.config import config_dict
 
@@ -25,28 +26,16 @@ def create_app(config_name='default'):
     app.config.from_object(config_dict[config_name])
     
     init_db(app=app)
-
+    csrf = CSRFProtect(app)
     
     with app.app_context():
         # Import models to ensure tables are created
         from .models import User, CompanyUser, Workshop, Equipment, MaintenanceRecord, MaintenanceStatus
         
         from .routers.user_routes import user_bp as user_blueprint
-        #from .main.routes import main as main_blueprint
-        #from .companyuser import companyuser as companyuser_blueprint
-        #from .workshop import workshop as workshop_blueprint
-        #from .equipment import equipment as equipment_blueprint
-        #from .maintenancerecord import maintenancerecord as maintenancerecord_blueprint
-        #from .maintenancestatus import maintenancestatus as maintenancestatus_blueprint
-
+        from .routers.company_routes import company_bp as company_blueprint
         app.register_blueprint(user_blueprint, url_prefix='/users')
-        #app.register_blueprint(main_blueprint, url_prefix='/main')
-        #app.register_blueprint(companyuser_blueprint, url_prefix='/companyusers')
-        #app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
-        #app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
-        #app.register_blueprint(maintenancerecord_blueprint, url_prefix='/maintenancerecords')
-        #app.register_blueprint(maintenancestatus_blueprint, url_prefix='/maintenancestatuses')
-        
+        app.register_blueprint(company_blueprint, url_prefix='/companies')
         # Create all tables
         db.create_all()
 

@@ -1,14 +1,24 @@
 <!-- User View Modal -->
 
-                <div class="modal-body">
-                 <div>
-                      <p><strong>Staff No:</strong> <span id="staffno"></span></p>
-                      <p><strong>Staff Name:</strong> <span id="staffname"></span></p>
-                      <p><strong>Is Admin:</strong> <span id="isadmin"></span></p>
-                      <p><strong>Created At:</strong> <span id="created_at"></span></p>
-                      <p><strong>Updated At:</strong> <span id="updated_at"></span></p>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
+<div class="modal fade" id="viewUserModal" tabindex="-1" role="dialog" aria-labelledby="viewUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="viewUserModalLabel">View User</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p><strong>Staff No:</strong> <span id="view-staffno"></span></p>
+                <p><strong>Staff Name:</strong> <span id="view-staffname"></span></p>
+                <p><strong>Is Admin:</strong> <span id="view-isadmin"></span></p>
+                <p><strong>Created At:</strong> <span id="view-created_at"></span></p>
+                <p><strong>Updated At:</strong> <span id="view-updated_at"></span></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

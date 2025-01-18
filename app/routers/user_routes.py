@@ -1,6 +1,8 @@
-from flask import Blueprint, render_template, redirect, url_for, request, flash  # Import flash for messages
-from app.forms.user_form import UserForm
-from app.models import User, db  # Import db for database operations
+from flask import Blueprint, render_template, flash, redirect, url_for, request
+from sqlalchemy.exc import IntegrityError
+from app.models import User
+from app.db.database import db
+from app.forms.user_form import  UserForm
 
 user_bp = Blueprint('user', __name__)
 
@@ -14,17 +16,23 @@ def user_list():
 @user_bp.route('/user/add', methods=['GET', 'POST'])
 def add_user():
     form = UserForm()
-    if form.validate_on_submit():
-        # Add user to the database
-        new_user = User(
-            staffno=form.staffno.data,
-            staffname=form.staffname.data,
-            isadmin=form.isadmin.data,
-            password_hash=User.set_password(password=form.password.data)
-        )
-        db.session.add(new_user)
-        db.session.commit()
-        return redirect(url_for('user.user_list'))
+    if request.method == 'POST' and form.validate_on_submit():
+        try:
+            # Add user to the database
+            new_user = User(
+                staffno=form.staffno.data,
+                staffname=form.staffname.data,
+                isadmin=form.isadmin.data,
+                password_hash=User.set_password(password=form.password.data)
+            )
+            db.session.add(new_user)
+            db.session.commit()
+            flash('User has been added successfully.', 'success')
+            return redirect(url_for('user.user_list'))
+        except IntegrityError:
+            db.session.rollback()
+            flash('Database error: User could not be added. Please check the form for errors.', 'danger')
+            return redirect(url_for('user.user_list'))
     return render_template('user/user_form.html', form=form)
 
 @user_bp.route('/user/edit/<int:staffno>', methods=['POST'])
@@ -51,3 +59,22 @@ def delete_user(staffno):
     db.session.commit()
     flash('User has been deleted successfully.', 'success')
     return redirect(url_for('user.user_list'))
+@user_bp.route('/user/edit/<int:staffno>', methods=['GET', 'POST'])
+def user_edit(staffno):
+    user = User.query.get_or_404(staffno)
+    form = UserForm(obj=user)
+    
+    if request.method == 'GET':
+        # Don't fill in the password field for GET requests
+        form.password.data = ''
+    
+    if form.validate_on_submit():
+        user.staffname = form.staffname.data
+        if form.password.data:  # Only update password if provided
+            user.set_password(form.password.data)
+        user.isadmin = form.isadmin.data
+        db.session.commit()
+        flash('User updated successfully!', 'success')
+        return redirect(url_for('user_list'))
+    
+    return render_template('user/user_form.html', form=form, title='Edit User')
