@@ -30,57 +30,44 @@
                         
                         <!-- Staff Name -->
                         <div class="mb-3">
-                            {{ form.staffname.label(class="form-label") }}
-                            {{ form.staffname(class="form-control" + (" is-invalid" if form.staffname.errors else ""), 
-                                            placeholder="Enter staff name") }}
-                            {% for error in form.staffname.errors %}
+                            {{ form.workshopname.label(class="form-label") }}
+                            {{ form.workshopname(class="form-control" + (" is-invalid" if form.workshopname.errors else ""), 
+                                            placeholder="Enter workshop name") }}
+                            {% for error in form.workshopname.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                             {% endfor %}
                         </div>
 
                         <!-- Company Name (English) -->
                         <div class="mb-3">
-                            {{ form.companyname_en.label(class="form-label") }}
-                            {{ form.companyname_en(class="form-control" + (" is-invalid" if form.companyname_en.errors else ""),
-                                                 placeholder="Enter company name in English") }}
-                            {% for error in form.companyname_en.errors %}
+                            {{ form.building.label(class="form-label") }}
+                            {{ form.building(class="form-control" + (" is-invalid" if form.building.errors else ""),
+                                                 placeholder="Enter building") }}
+                            {% for error in form.building.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                             {% endfor %}
                         </div>
 
-                        <!-- Company Name (Arabic) -->
-                        <div class="mb-3">
-                            {{ form.companyname_ar.label(class="form-label") }}
-                            <div class="input-group" dir="rtl">
-                                {{ form.companyname_ar(class="form-control text-end" + (" is-invalid" if form.companyname_ar.errors else ""),
-                                                     placeholder="أدخل اسم الشركة بالعربية") }}
-                                <span class="input-group-text">
-                                    <i class="fas fa-building"></i>
-                                </span>
-                            </div>
-                            {% for error in form.companyname_ar.errors %}
-                                <div class="invalid-feedback">{{ error }}</div>
-                            {% endfor %}
-                        </div>
+                        
 
                         <!-- Contact Number -->
                         <div class="mb-3">
-                            {{ form.contactnumber.label(class="form-label") }}
+                            {{ form.contact.label(class="form-label") }}
                             <div class="input-group">
                                 <span class="input-group-text">
                                     <i class="fas fa-phone"></i>
                                 </span>
-                                {{ form.contactnumber(class="form-control" + (" is-invalid" if form.contactnumber.errors else ""),
-                                                    placeholder="+1234567890") }}
+                                {{ form.contact(class="form-control" + (" is-invalid" if form.contact.errors else ""),
+                                                    placeholder="23216500") }}
                             </div>
-                            {% for error in form.contactnumber.errors %}
+                            {% for error in form.contact.errors %}
                                 <div class="invalid-feedback">{{ error }}</div>
                             {% endfor %}
                         </div>
 
                         <!-- Form Actions -->
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a href="{{ url_for('company.company_list') }}" class="btn btn-light">
+                            <a href="{{ url_for('workshop.workshop_list') }}" class="btn btn-light">
                                 <i class="fas fa-times me-2"></i>Cancel
                             </a>
                             {{ form.submit(class="btn btn-primary") }}
@@ -101,23 +88,13 @@
                     <div class="mb-4">
                         <h6 class="text-muted mb-2">Required Fields</h6>
                         <ul class="list-unstyled small">
-                            <li><i class="fas fa-check-circle text-success me-2"></i>Staff Name</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i>Company Name (English)</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i>Company Name (Arabic)</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i>workshop Name</li>
+                            <li><i class="fas fa-check-circle text-success me-2"></i>Building</li>
                             <li><i class="fas fa-check-circle text-success me-2"></i>Contact Number</li>
                         </ul>
                     </div>
-                    <div class="mb-4">
-                        <h6 class="text-muted mb-2">Format Guidelines</h6>
-                        <ul class="list-unstyled small">
-                            <li><i class="fas fa-info-circle text-primary me-2"></i>Phone format: +1234567890</li>
-                            <li><i class="fas fa-info-circle text-primary me-2"></i>Names should be 2-100 characters</li>
-                        </ul>
-                    </div>
-                    <div class="alert alert-info small mb-0">
-                        <i class="fas fa-lightbulb me-2"></i>
-                        Make sure to enter the company name in both English and Arabic for proper documentation.
-                    </div>
+                   
+                  
                 </div>
             </div>
         </div>

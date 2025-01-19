@@ -1,0 +1,197 @@
+<div class="user-nav">
+    <div class="dropdown">
+        <button class="user-nav-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {% if current_user.avatar %}
+                <img src="{{ current_user.avatar }}" alt="User avatar" class="user-avatar">
+            {% else %}
+                <div class="user-avatar-placeholder">
+                    {{ current_user.staffname[0].upper() }}
+                </div>
+            {% endif %}
+            <span class="user-name">{{ current_user.staffname }}</span>
+            <i class="fas fa-chevron-down"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+            <li class="dropdown-header">
+                <span class="user-email">{% if current_user.isadmin %}Admininstrator{% else %}User{% endif %}</span>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item" href="{{ url_for('user.user_profile', staffno=current_user.staffno) }}">
+                    <i class="fas fa-user"></i>
+                    Profile
+                </a>
+            </li>
+          
+            <li><hr class="dropdown-divider"></li>
+            <li>
+                <a class="dropdown-item logout-item" href="{{ url_for('user.logout') }}">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<style>
+    .user-nav {
+        position: relative;
+        padding: 0.5rem 1rem;
+    }
+
+    .user-nav-toggle {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.5rem 1rem;
+        background: var(--neutral-100);
+        border: 1px solid var(--neutral-300);
+        border-radius: 2rem;
+        color: var(--neutral-800);
+        transition: all 0.2s ease;
+        cursor: pointer;
+    }
+
+    .user-nav-toggle:hover {
+        background: var(--light-accent-soft);
+        border-color: var(--accent-color);
+    }
+
+    .user-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid var(--primary-light);
+    }
+
+    .user-avatar-placeholder {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+        color: var(--neutral-100);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 1.1rem;
+        border: 2px solid var(--primary-light);
+    }
+
+    .user-name {
+        font-weight: 500;
+        color: var(--neutral-700);
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .fa-chevron-down {
+        font-size: 0.8rem;
+        color: var(--neutral-500);
+        transition: transform 0.2s ease;
+    }
+
+    .show .fa-chevron-down {
+        transform: rotate(180deg);
+    }
+
+    .user-dropdown {
+        min-width: 240px;
+        padding: 0.5rem;
+        margin-top: 0.5rem;
+        background: var(--neutral-100);
+        border: none;
+        border-radius: 1rem;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    .dropdown-header {
+        padding: 0.75rem 1rem;
+        background: var(--neutral-200);
+        border-radius: 0.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .user-email {
+        font-size: 0.875rem;
+        color: var(--neutral-600);
+        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .dropdown-item {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 1rem;
+        color: var(--neutral-700);
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+
+    .dropdown-item i {
+        font-size: 1rem;
+        width: 20px;
+        color: var(--neutral-500);
+    }
+
+    .dropdown-item:hover {
+        background: var(--light-accent-soft);
+        color: var(--neutral-900);
+        transform: translateX(5px);
+    }
+
+    .dropdown-item:hover i {
+        color: var(--primary-color);
+    }
+
+    .logout-item {
+        color: var(--danger);
+    }
+
+    .logout-item:hover {
+        background: rgba(220, 53, 69, 0.1);
+        color: var(--danger);
+    }
+
+    .logout-item i {
+        color: var(--danger);
+    }
+
+    .dropdown-divider {
+        margin: 0.5rem 0;
+        border-color: var(--neutral-300);
+    }
+
+    /* Animation for dropdown */
+    .dropdown-menu {
+        animation: dropdownFade 0.2s ease;
+    }
+
+    @keyframes dropdownFade {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .user-name {
+            max-width: 100px;
+        }
+        
+        .user-dropdown {
+            min-width: 200px;
+        }
+    }
+</style> 

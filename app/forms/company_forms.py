@@ -30,12 +30,13 @@ class CompanyUserForm(FlaskForm):
         self.company = kwargs.pop('company', None)
         super(CompanyUserForm, self).__init__(*args, **kwargs)
 
-    def validate_companyname_en(self, field):
-        if self.company and self.company.companyname_en == field.data:
-            return
-        company = CompanyUser.query.filter_by(companyname_en=field.data).first()
-        if company:
-            raise ValidationError('This company name is already registered.')
+    # def validate_companyname_en(self, field):
+    #     if self.company and self.company.companyname_en == field.data:
+    #         print("Company name already registered .... please")
+    #         return
+    #     else:
+    #         print("Company name already not registered .... please")
+    #         raise ValidationError('This company name is already registered.')
 
 class CompanySearchForm(FlaskForm):
     search = StringField('Search', validators=[Length(max=100)])

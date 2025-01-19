@@ -18,11 +18,11 @@ class User(db.Model, UserMixin):
     def get_id(self):
         return str(self.staffno)
 
-    @classmethod
+   
     def set_password(cls, password):
         return generate_password_hash(password)
 
-    @classmethod
+   
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
 

@@ -2,5 +2,17 @@
     <div class="container">
         <a class="navbar-brand" href="{{ url_for('user.user_list') }}">User Management</a>
    <a class="btn btn-primary" href="{{ url_for('company.company_list') }}">company Users</a>
-    </div>
+<a class="btn btn-primary" href="{{ url_for('workshop.workshop_list') }}">Workshops </a>    
+<ul class="navbar-nav ms-auto">
+    {% if current_user.is_authenticated %}
+    {% include 'user/user_nav.html' %}
+    {% else %}
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('user.login') }}">
+            <i class="fas fa-sign-in-alt me-2"></i>Login
+        </a>
+    </li>
+    {% endif %}
+</ul>
+</div>
 </nav>

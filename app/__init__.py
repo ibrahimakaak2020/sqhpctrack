@@ -26,6 +26,9 @@ def create_app(config_name='default'):
     app.config.from_object(config_dict[config_name])
     
     init_db(app=app)
+    login_manager.login_view = 'users.login'  # Specify the login route
+    login_manager.login_message_category = 'info'
+    
     csrf = CSRFProtect(app)
     
     with app.app_context():
@@ -34,8 +37,10 @@ def create_app(config_name='default'):
         
         from .routers.user_routes import user_bp as user_blueprint
         from .routers.company_routes import company_bp as company_blueprint
+        from .routers.workshop_routes import workshop_bp as workshop_blueprint
         app.register_blueprint(user_blueprint, url_prefix='/users')
         app.register_blueprint(company_blueprint, url_prefix='/companies')
+        app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
         # Create all tables
         db.create_all()
 

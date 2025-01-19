@@ -1,24 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Companies{% endblock %}
+{% block title %}Workshops{% endblock %}
 
 {% block content %}
 <div class="container">
     <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h2 class="text-dark mb-1">Company Management</h2>
+            <h2 class="text-dark mb-1">Workshops Management</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                   
-                    <li class="breadcrumb-item active">Companies</li>
+                    <li class="breadcrumb-item active">Workshops</li>
                 </ol>
             </nav>
         </div>
       
         <div>
-            <a href="{{ url_for('company.add_company') }}" class="btn btn-primary">
-                <i class="fas fa-plus-circle me-2"></i>Add New Company
+            <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
+                <i class="fas fa-plus-circle me-2"></i>Add New workshop
             </a>
         </div>
      
@@ -27,7 +27,7 @@
     <!-- Search Form -->
     <div class="card shadow-sm mb-4">
         <div class="card-body">
-            <form method="GET" action="{{ url_for('company.company_list') }}" class="row g-3 align-items-center" id="searchForm">
+            <form method="GET" action="{{ url_for('workshop.workshop_list') }}" class="row g-3 align-items-center" id="searchForm">
                 {{ search_form.hidden_tag() }}
                 <div class="col-md-4">
                     <div class="search-box">
@@ -39,7 +39,7 @@
                     {{ search_form.submit(class="btn btn-primary") }}
                 </div>
                 <div class="col-md-auto">
-                    <a href="{{ url_for('company.company_list') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('workshop.workshop_list') }}" class="btn btn-outline-secondary">
                         <i class="fas fa-sync-alt me-2"></i>Reset
                     </a>
                 </div>
@@ -50,45 +50,40 @@
     <!-- Companies List -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
-            {% if companies %}
+            {% if workshops %}
             <div class="table-responsive">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
                             <th class="ps-4">ID</th>
-                            <th>Staff Name</th>
-                            <th>Company Name (EN)</th>
-                            <th>Company Name (AR)</th>
-                            <th>Contact Number</th>
+                            <th>Workshop Name</th>
+                            <th>Building</th>
+                            <th>Contact</th>
                             
                             <th class="text-end pe-4">Actions</th>
                            
                         </tr>
                     </thead>
                     <tbody>
-                        {% for company in companies %}
+                        {% for workshop in workshops %}
                         <tr>
-                            <td class="ps-4">{{ company.cid }}</td>
+                            <td class="ps-4">{{ workshop.id }}</td>
                             <td>
                                 <div class="d-flex align-items-center">
                                     <div class="avatar-circle bg-primary me-2">
-                                        {{ company.staffname[:2].upper() }}
+                                        {{ workshop.workshopname[:2].upper() }}
                                     </div>
-                                    {{ company.staffname }}
+                                    {{ workshop.workshopname }}
+                                  
                                 </div>
                             </td>
-                            <td>{{ company.companyname_en }}</td>
-                            <td class="arabic-text">{{ company.companyname_ar }}</td>
-                            <td>
-                                <a href="tel:{{ company.contactnumber }}" class="text-decoration-none">
-                                    <i class="fas fa-phone-alt me-2 text-muted"></i>
-                                    {{ company.contactnumber }}
-                                </a>
-                            </td>
+                            <td>{{ workshop.building }}</td>
+                            <td class="arabic-text">{{ workshop.contact }}</td>
+                            
                           
                             <td class="text-end pe-4">
                                 <div class="btn-group">
-                                    <a href="{{ url_for('company.edit_company', cid=company.cid) }}" 
+                                    <a href="{{ url_for('workshop.edit_workshop', id=workshop.id) }}" 
                                        class="btn btn-sm btn-outline-primary" 
                                        data-bs-toggle="tooltip" 
                                        title="Edit">
@@ -97,13 +92,13 @@
                                     <button type="button" 
                                             class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal"
-                                            data-bs-target="#deleteModal{{ company.cid }}"
+                                            data-bs-target="#deleteModal{{ workshop.id }}"
                                             title="Delete">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
 
-                                {% include 'company/partials/delete_modal.html' %}
+                                {% include 'workshop/partials/delete_modal.html' %}
                             </td>
                            
                         </tr>
@@ -114,20 +109,20 @@
             {% else %}
             <div class="text-center py-5">
                 <img src="{{ url_for('static', filename='images/empty-state.png') }}" 
-                     alt="No companies" 
+                     alt="No workshops Found" 
                      class="mb-4" 
                      style="width: 200px;">
-                <h4 class="text-muted mb-3">No Companies Found</h4>
+                <h4 class="text-muted mb-3">No workshops Found</h4>
                 <p class="text-muted mb-4">
                     {% if search_form.search.data %}
-                        No companies match your search criteria.
+                        No workshops match your search criteria.
                     {% else %}
-                        There are no companies in the system yet.
+                        There are no workshops in the system yet.
                     {% endif %}
                 </p>
                 {% if current_user.isadmin %}
-                <a href="{{ url_for('company.add_company') }}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle me-2"></i>Add First Company
+                <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
+                    <i class="fas fa-plus-circle me-2"></i>Add First workshop
                 </a>
                 {% endif %}
             </div>
