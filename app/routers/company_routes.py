@@ -8,7 +8,7 @@ from app.db.database import db
 company_bp = Blueprint('company', __name__)
 
 @company_bp.route('/companies')
-#@login_required
+@login_required
 def company_list():
     search = request.args.get('search', '')
     query = CompanyUser.query
@@ -32,7 +32,7 @@ def company_list():
                          search_form=search_form)
 
 @company_bp.route('/companies/add', methods=['GET', 'POST'])
-#@login_required
+@login_required
 
 def add_company():
     form = CompanyUserForm()
@@ -55,7 +55,7 @@ def add_company():
     return render_template('company/form.html', form=form, title='Add New Company')
 
 @company_bp.route('/companies/<int:cid>/edit', methods=['GET', 'POST'])
-#@login_required
+@login_required
 
 def edit_company(cid):
     company = CompanyUser.query.get_or_404(cid)
@@ -79,7 +79,7 @@ def edit_company(cid):
     return render_template('company/form.html', form=form, company=company, title='Edit Company')
 
 @company_bp.route('/companies/<int:cid>/delete', methods=['POST'])
-#@login_required
+@login_required
 
 def delete_company(cid):
     company = CompanyUser.query.get_or_404(cid)

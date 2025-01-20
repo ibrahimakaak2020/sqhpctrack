@@ -13,7 +13,7 @@
                     </h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{{ url_for('user.edit_user', staffno=user.staffno) }}">
+                    <form method="POST" action="{{ url_for('users.edit_user', staffno=user.staffno) }}">
                         {{ form.hidden_tag() }}
                         
                         <!-- Staff Number (Read-only) -->
@@ -66,7 +66,7 @@
                         <!-- Form Buttons -->
                         <div class="d-grid gap-2">
                             {{ form.submit(class="btn btn-warning") }}
-                            <a href="{{ url_for('user.user_list') }}" class="btn btn-secondary">
+                            <a href="{{ url_for('users.user_list') }}" class="btn btn-secondary">
                                 <i class="fas fa-arrow-left"></i> Back to User List
                             </a>
                         </div>

@@ -29,7 +29,7 @@
 
                     {% if current_user.isadmin or current_user.staffno == user.staffno %}
                     <div class="text-center mt-4">
-                        <a href="{{ url_for('user.update_user', staffno=user.staffno) }}" 
+                        <a href="{{ url_for('users.edit_user', staffno=user.staffno) }}" 
                            class="btn btn-dark btn-lg px-4">
                             <i class="fas fa-edit me-2"></i>Edit Profile
                         </a>

@@ -1,18 +1,33 @@
-<nav class="navbar navbar-dark bg-dark">
-    <div class="container">
+
         <a class="navbar-brand" href="{{ url_for('user.user_list') }}">User Management</a>
    <a class="btn btn-primary" href="{{ url_for('company.company_list') }}">company Users</a>
 <a class="btn btn-primary" href="{{ url_for('workshop.workshop_list') }}">Workshops </a>    
-<ul class="navbar-nav ms-auto">
-    {% if current_user.is_authenticated %}
-    {% include 'user/user_nav.html' %}
-    {% else %}
-    <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('user.login') }}">
-            <i class="fas fa-sign-in-alt me-2"></i>Login
-        </a>
-    </li>
-    {% endif %}
-</ul>
-</div>
+
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <!-- Mobile Menu Toggle -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Page Title -->
+        <span class="navbar-text">
+            {% block page_title %}{% endblock %}
+        </span>
+
+        <!-- User Menu -->
+        <ul class="navbar-nav ms-auto">
+            {% if current_user.is_authenticated %}
+            {% include 'components/user_nav.html' %}
+            {% else %}
+            <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('users.login') }}">
+                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
 </nav>

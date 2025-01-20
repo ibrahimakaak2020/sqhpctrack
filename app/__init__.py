@@ -34,10 +34,11 @@ def create_app(config_name='default'):
     with app.app_context():
         # Import models to ensure tables are created
         from .models import User, CompanyUser, Workshop, Equipment, MaintenanceRecord, MaintenanceStatus
-        
-        from .routers.user_routes import user_bp as user_blueprint
+        from .routers.main   import main_bp as main_router
+        from .routers.user_routes import users_bp as user_blueprint
         from .routers.company_routes import company_bp as company_blueprint
         from .routers.workshop_routes import workshop_bp as workshop_blueprint
+        app.register_blueprint(main_router)
         app.register_blueprint(user_blueprint, url_prefix='/users')
         app.register_blueprint(company_blueprint, url_prefix='/companies')
         app.register_blueprint(workshop_blueprint, url_prefix='/workshops')

@@ -17,7 +17,7 @@
             </li>
             <li><hr class="dropdown-divider"></li>
             <li>
-                <a class="dropdown-item" href="{{ url_for('user.user_profile', staffno=current_user.staffno) }}">
+                <a class="dropdown-item" href="{{ url_for('users.user_profile', staffno=current_user.staffno) }}">
                     <i class="fas fa-user"></i>
                     Profile
                 </a>
@@ -25,7 +25,7 @@
           
             <li><hr class="dropdown-divider"></li>
             <li>
-                <a class="dropdown-item logout-item" href="{{ url_for('user.logout') }}">
+                <a class="dropdown-item logout-item" href="{{ url_for('users.logout') }}">
                     <i class="fas fa-sign-out-alt"></i>
                     Logout
                 </a>

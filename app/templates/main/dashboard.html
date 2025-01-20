@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - PC Track{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Welcome Section -->
+    <div class="row mb-4">
+        <div class="col">
+            <h2>Welcome, {{ current_user.staffname }}!</h2>
+            <p class="text-muted">Here's an overview of your system</p>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="row g-4 mb-4">
+        <!-- Total PCs Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">
+                        <i class="fas fa-desktop"></i> Total PCs
+                    </h5>
+                    <h2 class="mt-3 mb-0">{{ stats.total_equipment|default(0) }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Active PCs Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-success">
+                        <i class="fas fa-check-circle"></i> Active PCs
+                    </h5>
+                    <h2 class="mt-3 mb-0">{{ stats.active_maintenance_count|default(0) }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Maintenance Due Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-warning">
+                        <i class="fas fa-tools"></i> Maintenance Due
+                    </h5>
+                    <h2 class="mt-3 mb-0">{{ stats.under_maintenance_count|default(0) }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Users Card -->
+        <div class="col-md-6 col-lg-3">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title text-info">
+                        <i class="fas fa-users"></i> Total Users
+                    </h5>
+                    <h2 class="mt-3 mb-0">{{ stats.total_users|default(0) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="row mb-4">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="#" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add New PC
+                        </a>
+                        <a href="#" class="btn btn-success">
+                            <i class="fas fa-file-export"></i> Export Report
+                        </a>
+                        <a href="#" class="btn btn-info">
+                            <i class="fas fa-search"></i> Search Assets
+                        </a>
+                        {% if current_user.isadmin %}
+                        <a href="{{ url_for('users.register') }}" class="btn btn-secondary">
+                            <i class="fas fa-user-plus"></i> Add User
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activities -->
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activities</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Activity</th>
+                                    <th>User</th>
+                                    <th>Details</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Add your activity logs here -->
+                                <tr>
+                                    <td colspan="4" class="text-center">No recent activities</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .card {
+        transition: transform 0.2s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+    .icon-square {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+    }
+</style>
+{% endblock %} 

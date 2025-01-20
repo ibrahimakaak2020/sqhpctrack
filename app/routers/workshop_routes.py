@@ -8,7 +8,7 @@ from app.db.database import db
 workshop_bp = Blueprint('workshop', __name__)
 
 @workshop_bp.route('/workshops')
-#@login_required
+@login_required
 def workshop_list():
     search = request.args.get('search', '')
     query = Workshop.query
@@ -32,7 +32,7 @@ def workshop_list():
                          search_form=search_form)
 
 @workshop_bp.route('/workshops/add', methods=['GET', 'POST'])
-#@login_required
+@login_required
 
 def add_workshop():
     form = WorkshopUserForm()
@@ -54,7 +54,7 @@ def add_workshop():
     return render_template('workshop/form.html', form=form, title='Add New Workshop')
 
 @workshop_bp.route('/workshops/<int:id>/edit', methods=['GET', 'POST'])
-#@login_required
+@login_required
 
 def edit_workshop(id):
     workshop = Workshop.query.get_or_404(id)
@@ -75,7 +75,7 @@ def edit_workshop(id):
     return render_template('workshop/form.html', form=form, company=workshop, title='Edit Workshop')
 
 @workshop_bp.route('/workshops/<int:id>/delete', methods=['POST'])
-#@login_required
+@login_required
 
 def delete_workshop(id):
     workshop = Workshop.query.get_or_404(id)
