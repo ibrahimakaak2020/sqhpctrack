@@ -1,13 +1,23 @@
-from flask import Flask, render_template
+from datetime import timedelta
+from flask import Flask, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
-
+from flask_session import Session
 from app.config.config import config_dict
 
 from  app.db.database import db,init_db,login_manager
 
 def create_app(config_name='default'):
     app = Flask(__name__)
+    app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=20)
+
+# Initialize the session
+    Session(app)
+
+    @app.before_request
+    def make_session_permanent():
+        session.permanent = True
   
     @app.errorhandler(404)
     def not_found_error(error):

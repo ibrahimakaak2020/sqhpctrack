@@ -78,7 +78,7 @@ class MaintenanceRecord(db.Model):
 
     # Relationships
     equipment = db.relationship('Equipment', backref=db.backref('maintenance_records', lazy=True))
-    registrar = db.relationship('User', backref=db.backref('registered_maintenance', lazy=True))
+    registered_by = db.relationship('User', backref=db.backref('registered_maintenance', lazy=True))
     
     def __repr__(self):
         return f'<MaintenanceRecord {self.id}>'
@@ -104,7 +104,7 @@ class MaintenanceStatus(db.Model):
     maintenance = db.relationship('MaintenanceRecord', backref=db.backref('status_updates', lazy=True))
     workshop = db.relationship('Workshop', backref=db.backref('status_updates', lazy=True))
     company = db.relationship('CompanyUser', backref=db.backref('status_updates', lazy=True))
-    registrar = db.relationship('User', backref=db.backref('registered_status_updates', lazy=True))
+    registered_by = db.relationship('User', backref=db.backref('registered_status_updates', lazy=True))
 
     def __repr__(self):
         return f'<MaintenanceStatus {self.id} ({self.status})>'
