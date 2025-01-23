@@ -1,385 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %} - PC Track</title>
-    <!-- Bootstrap CSS -->
+    <title>User List</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <!-- Custom CSS -->
-    <style>
-        :root {
-            /* Primary Colors */
-            --primary-color: #659287;
-            --primary-light: #7AA99E;
-            --primary-dark: #4D6F66;
-
-            /* Secondary Colors */
-            --secondary-color: #B1C29E;
-            --secondary-light: #C2D1B2;
-            --secondary-dark: #95A484;
-
-            /* Accent Colors */
-            --accent-color: #DEAA79;
-            --accent-light: #E8BF98;
-            --accent-dark: #C69162;
-
-            /* Light Accent Colors */
-            --light-accent: #FFE6A9;
-            --light-accent-soft: #FFF0C4;
-            --light-accent-dark: #E6CD92;
-
-            /* Neutral Colors */
-            --neutral-100: #FFFFFF;
-            --neutral-200: #F8F9FA;
-            --neutral-300: #E9ECEF;
-            --neutral-400: #DEE2E6;
-            --neutral-500: #ADB5BD;
-            --neutral-600: #6C757D;
-            --neutral-700: #495057;
-            --neutral-800: #343A40;
-            --neutral-900: #212529;
-
-            /* Semantic Colors */
-            --success: #75B798;
-            --warning: #FFD43B;
-            --danger: #DC3545;
-            --info: #0DCAF0;
-        }
-
-        body {
-            color: var(--neutral-800);
-            background-color: var(--neutral-200);
-        }
-
-        /* Sidebar styles */
-        .sidebar {
-            min-height: 100vh;
-            background: linear-gradient(to bottom, var(--primary-color), var(--primary-dark));
-            border-right: 1px solid var(--neutral-300);
-        }
-
-        .sidebar .nav-link {
-            color: var(--neutral-100);
-            padding: 0.875rem 1.25rem;
-            transition: all 0.3s ease;
-            border-radius: 0.5rem;
-            margin: 0.25rem 0.75rem;
-        }
-
-        .sidebar .nav-link:hover {
-            background-color: var(--accent-color);
-            transform: translateX(5px);
-        }
-
-        .sidebar .nav-link.active {
-            background-color: var(--accent-light);
-            color: var(--neutral-800);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        /* Navbar styles */
-        .navbar {
-            background: var(--neutral-100) !important;
-            border-bottom: 1px solid var(--neutral-300);
-            box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-dark) !important;
-            letter-spacing: 0.5px;
-        }
-
-        /* Card styles */
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            background: var(--neutral-100);
-            border-radius: 0.75rem;
-        }
-
-        .card-header {
-            background-color: var(--neutral-100);
-            border-bottom: 1px solid var(--neutral-300);
-        }
-
-        /* Button styles */
-        .btn-primary {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
-            box-shadow: 0 2px 4px rgba(101, 146, 135, 0.15);
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            background-color: var(--primary-dark);
-            border-color: var(--primary-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(101, 146, 135, 0.2);
-        }
-
-        .btn-secondary {
-            background-color: var(--accent-color);
-            border-color: var(--accent-color);
-            color: var(--neutral-800);
-        }
-
-        .btn-secondary:hover {
-            background-color: var(--accent-dark);
-            border-color: var(--accent-dark);
-            color: var(--neutral-100);
-        }
-
-        /* Form styles */
-        .form-control:focus {
-            border-color: var(--primary-light);
-            box-shadow: 0 0 0 0.25rem rgba(101, 146, 135, 0.15);
-        }
-
-        /* Table styles */
-        .table thead th {
-            background-color: var(--neutral-200);
-            border-bottom: 2px solid var(--primary-light);
-            color: var(--neutral-700);
-        }
-
-        /* Alert styles */
-        .alert-success {
-            background-color: var(--success);
-            border: none;
-            color: var(--neutral-100);
-        }
-
-        .alert-warning {
-            background-color: var(--warning);
-            border: none;
-            color: var(--neutral-800);
-        }
-
-        /* Badge styles */
-        .badge.bg-primary {
-            background-color: var(--primary-color) !important;
-        }
-
-        .badge.bg-secondary {
-            background-color: var(--secondary-color) !important;
-            color: var(--neutral-800);
-        }
-
-        /* Dropdown styles */
-        .dropdown-menu {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            border-radius: 0.5rem;
-        }
-
-        .dropdown-item:hover {
-            background-color: var(--light-accent-soft);
-        }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--neutral-200);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--primary-light);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--primary-color);
-        }
-    </style>
+   
     {% block extra_css %}{% endblock %}
+
 </head>
-
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Toggle Button (Hamburger Menu) -->
-            <button class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar"
-                aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i>
-            </button>
-
-            <!-- Sidebar -->
-            <div class="col-md-3 col-lg-2 d-md-block sidebar collapse " id="sidebar">
-                <div class="position-sticky pt-3">
-                    <div class="text-center mb-4">
-                        <img src="{{ url_for('static', filename='images/logo.jpg') }}" alt="PC Track" height="40">
-                    </div>
-
-                    <ul class="nav flex-column">
-                        <!-- Dashboard -->
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint == 'main.index' %}active{% endif %}"
-                                href="{{ url_for('main.index') }}">
-                                <i class="fas fa-home"></i>
-                                Dashboard
-                            </a>
-                        </li>
+    {% include 'navbar.html' %}
+    <!-- ...existing code... -->
 
 
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('equipment.') %}active{% endif %}"
-                                href="#">
-                                <i class="fas fa-tools"></i>
-                                Equipments
-                            </a>
-                        </li>
-                        {% endif %}
-                        <!-- Companies -->
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('company.') %}active{% endif %}"
-                                href="{{ url_for('company.company_list') }}">
-                                <i class="fas fa-building"></i>
-                                Companies
-                            </a>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Equipment &
-                                Maintenance</a>
-                        </li>
-                        </li>
-                        {% endif %}
-
-                        <!-- Workshops -->
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('workshop.') %}active{% endif %}"
-                                href="{{ url_for('workshop.workshop_list') }}">
-                                <i class="fas fa-tools"></i>
-                                Workshops
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        <!-- Users (Admin Only) -->
-                        {% if current_user.is_authenticated and current_user.isadmin %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('users.') %}active{% endif %}"
-                                href="{{ url_for('users.user_list') }}">
-                                <i class="fas fa-users"></i>
-                                Users
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        <!-- Reports -->
-                        {% if current_user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.endpoint and request.endpoint.startswith('reports.') %}active{% endif %}"
-                                href="#">
-                                <i class="fas fa-chart-bar"></i>
-                                Reports
-                            </a>
-                        </li>
-                        {% endif %}
-
-                        {% for equipment in equipment_list %}
-                        <li class="nav-item">
-                        <!--     <a href="{{ url_for('maintenance.equipment_history', sn=equipment.sn) }}" class="nav-link">
-                                {{ equipment.model_name }} History (SN: {{ equipment.sn }})
-                            </a> -->
-                        </li>
-                        {% endfor %}
-                    </ul>
-
-                    <!-- Settings Section -->
-                    {% if current_user.is_authenticated %}
-                    <h6
-                        class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted">
-                        <span>Settings</span>
-                    </h6>
-                    <ul class="nav flex-column mb-2">
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">
-                                <i class="fas fa-cog"></i>
-                                System Settings
-                            </a>
-                        </li>
-                    </ul>
-                    {% endif %}
-                </div>
-            </div>
-
-            <!-- Main Content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <!-- Top Navbar -->
-                <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-                    <div class="container">
-                        <!-- Mobile Menu Toggle -->
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarNav">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-
-                        <!-- Page Title -->
-                        <span class="navbar-text">
-                            {% block page_title %}{% endblock %}
-                        </span>
-
-                        <!-- User Menu -->
-                        <ul class="navbar-nav ms-auto">
-                            {% if current_user.is_authenticated %}
-                            {% include 'components/user_nav.html' %}
-                            {% else %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('users.login') }}">
-                                    <i class="fas fa-sign-in-alt me-2"></i>Login
-                                </a>
-                            </li>
-                            {% endif %}
-                        </ul>
-                    </div>
-                </nav>
-
-                <!-- Flash Messages -->
-                {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
                 {% for category, message in messages %}
-                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" id="flash-{{ loop.index }}">
                     {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
                 {% endfor %}
-                {% endif %}
-                {% endwith %}
-
-                <!-- Main Content -->
-                {% block content %}{% endblock %}
-            </main>
-        </div>
+            {% endif %}
+        {% endwith %}
+        {% block content %}{% endblock %}
     </div>
+    {% include 'footer.html' %}
+    
+    <!-- Add Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-    <!-- Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
-
-    <!-- Custom JS -->
-    <script>
-        // Auto-hide flash messages
-        document.addEventListener('DOMContentLoaded', function () {
+<script>
+    // Function to auto-close alerts
+    document.addEventListener('DOMContentLoaded', function() {
+            // Get all alerts
             const alerts = document.querySelectorAll('.alert');
-            alerts.forEach(alert => {
-                setTimeout(() => {
-                    const bsAlert = new bootstrap.Alert(alert);
+            
+            alerts.forEach(function(alert) {
+                // Create Bootstrap Alert instance
+                const bsAlert = new bootstrap.Alert(alert);
+                
+                // Set timeout to close after 3 seconds (3000 milliseconds)
+                setTimeout(function() {
                     bsAlert.close();
-                }, 5000);
+                }, 3000);
+                
+                // Optional: Pause timer on hover
+                alert.addEventListener('mouseenter', function() {
+                    clearTimeout(alert.timeout);
+                });
+                
+                // Optional: Resume timer on mouse leave
+                alert.addEventListener('mouseleave', function() {
+                    alert.timeout = setTimeout(function() {
+                        bsAlert.close();
+                    }, 3000);
+                });
             });
         });
-    </script>
-    {% block extra_js %}{% endblock %}
-</body>
+</script>
 
+{% block extra_js %}{% endblock %}
+</body>
 </html>
