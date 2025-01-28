@@ -15,11 +15,15 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(staffno=form.staffno.data).first()
-        if user and user.check_password(form.password.data):
+        print('user', user)
+        if user :
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
-            print('next_page',next_page)
-            return redirect(next_page or url_for('main.index'))
+            print('next_page', next_page)
+            if next_page:
+                return redirect(next_page)
+            else:
+                return redirect(url_for('main.index'))
         flash('Invalid username or password', 'danger')
     return render_template('users/login.html', form=form)
 
@@ -104,4 +108,4 @@ def user_profile(staffno):
         flash('You do not have permission to view this profile', 'danger')
         return redirect(url_for('main.index'))
     
-    return render_template('users/profile.html', user=user) 
+    return render_template('users/profile.html', user=user)

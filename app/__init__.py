@@ -48,6 +48,8 @@ def create_app(config_name='default'):
         from .routers.user_routes import users_bp as user_blueprint
         from .routers.company_routes import company_bp as company_blueprint
         from .routers.workshop_routes import workshop_bp as workshop_blueprint
+        from .routers.equipment import equipment_bp as equipment_blueprint
+        app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
         app.register_blueprint(main_router)
         app.register_blueprint(user_blueprint, url_prefix='/users')
         app.register_blueprint(company_blueprint, url_prefix='/companies')

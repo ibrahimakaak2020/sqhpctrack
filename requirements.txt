@@ -4,3 +4,5 @@ Flask-SQLAlchemy
 flask-login
 flask_wtf
 flask_migrate
+pytz
+tzlocal 
