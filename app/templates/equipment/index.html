@@ -1,0 +1,40 @@
+<!-- Equipment Master Page -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Equipment Master</h2>
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Add Equipment</button>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>SN</th>
+            <th>Model Name</th>
+            <th>Type</th>
+            <th>Manufacturer</th>
+            <th>Location</th>
+            <th>Building</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipment in equipments %}
+        <tr>
+            <td>{{ equipment.sn }}</td>
+            <td>{{ equipment.model_name }}</td>
+            <td>{{ equipment.equipment_type }}</td>
+            <td>{{ equipment.manufacturer }}</td>
+            <td>{{ equipment.locname }}</td>
+            <td>{{ equipment.building }}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEquipmentModal{{ equipment.sn }}">Edit</button>
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEquipmentModal{{ equipment.sn }}">Delete</button>
+                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal{{ equipment.sn }}">Add Maintenance</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Include Modals -->
+{% include 'equipment/equipment_modal.html' %}
+{% endblock %}

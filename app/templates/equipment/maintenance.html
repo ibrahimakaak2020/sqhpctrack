@@ -1,0 +1,33 @@
+<!-- Maintenance Page -->
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Maintenance Records for {{ equipment.sn }}</h2>
+<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMaintenanceModal">Add Maintenance</button>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Maintenance ID</th>
+            <th>Problem Description</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in maintenance_records %}
+        <tr>
+            <td>{{ record.id }}</td>
+            <td>{{ record.problem_description }}</td>
+            <td>{{ record.latest_status.status if record.latest_status else 'Open' }}</td>
+            <td>
+                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal{{ record.id }}">Update Status</button>
+                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#closeMaintenanceModal{{ record.id }}">Close</button>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Include Modals -->
+{% include 'maintenance/maintenance_modal.html' %}
+{% endblock %}

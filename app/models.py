@@ -125,6 +125,13 @@ class MaintenanceStatus(db.Model):
 
     def __repr__(self):
         return f'<MaintenanceStatus {self.id} ({self.status})>'
+    # In MaintenanceStatus model
+    def set_maintenance_inactive(self):
+        if self.status.lower() == "completed":
+            maintenance_record = MaintenanceRecord.query.get(self.maintenance_id)
+            if maintenance_record:
+                maintenance_record.isactive = False
+                db.session.commit()
 
 # Event handlers
 def update_user_timestamp(mapper, connection, target):

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Equipment List</h1>
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addEquipmentModal">
+    Add Equipment
+</button>
+<ul>
+    {% for equipment in equipments %}
+    <li>
+        {{ equipment.model_name }} - {{ equipment.sn }}
+        <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#editEquipmentModal" data-id="{{ equipment.id }}" data-sn="{{ equipment.sn }}" data-model_name="{{ equipment.model_name }}" data-equipment_type="{{ equipment.equipment_type }}" data-manufacturer="{{ equipment.manufacturer }}" data-locname="{{ equipment.locname }}" data-building="{{ equipment.building }}" data-note="{{ equipment.note }}" data-created_by="{{ equipment.created_by }}">
+            Edit
+        </button>
+        <form action="{{ url_for('equipment.delete_equipment', id=equipment.id) }}" method="post" style="display:inline;">
+            <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
+    </li>
+    {% endfor %}
+</ul>
+{% include 'equipment/equipment_modal.html' %}
+{% endblock %}
