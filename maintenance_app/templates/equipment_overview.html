@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Equipment Overview</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Serial Number</th>
+            <th>Model Name</th>
+            <th>Latest Status</th>
+            <th>Active Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for equipment in equipment_list %}
+        <tr>
+            <td>{{ equipment.serial_number }}</td>
+            <td>{{ equipment.model_name }}</td>
+            <td>
+                {% if equipment.maintenance_records %}
+                    {% set latest_status = equipment.maintenance_records[-1].statuses[-1] %}
+                    {{ latest_status.status_type if latest_status else "N/A" }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+            <td>
+                {% if equipment.maintenance_records %}
+                    {% set active_record = equipment.maintenance_records[-1] %}
+                    {{ "Active" if active_record.active else "Inactive" }}
+                {% else %}
+                    Inactive
+                {% endif %}
+            </td>
+            <td>
+                <a href="{{ url_for('create_maintenance_record') }}">Create Maintenance Record</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add Status Update for Maintenance Record #{{ maintenance_record.id }}</h1>
+<form method="POST">
+    {{ form.hidden_tag() }}
+    <div>
+        {{ form.status_type.label }}<br>
+        {{ form.status_type() }}<br>
+        {% for error in form.status_type.errors %}
+            <span style="color: red;">[{{ error }}]</span><br>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.notes.label }}<br>
+        {{ form.notes(cols=40, rows=5) }}<br>
+        {% for error in form.notes.errors %}
+            <span style="color: red;">[{{ error }}]</span><br>
+        {% endfor %}
+    </div>
+    <div>
+        {{ form.submit() }}
+    </div>
+</form>
+{% endblock %}
