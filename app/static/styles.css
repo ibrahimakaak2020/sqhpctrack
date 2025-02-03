@@ -1,7 +1,7 @@
 :root {
     /* Primary Colors */
-    --primary-color: #659287;
-    --primary-light: #7AA99E;
+    --primary-color: #343a40; /* Dark background */
+    --primary-light: #495057; /* Lighter shade for hover */
     --primary-dark: #4D6F66;
 
     /* Secondary Colors */
@@ -10,7 +10,7 @@
     --secondary-dark: #95A484;
 
     /* Accent Colors */
-    --accent-color: #DEAA79;
+    --accent-color: #ffcc00; /* Accent color for brand and hover */
     --accent-light: #E8BF98;
     --accent-dark: #C69162;
 
@@ -35,6 +35,10 @@
     --warning: #FFD43B;
     --danger: #DC3545;
     --info: #0DCAF0;
+
+    /* Custom Colors */
+    --text-light: #f8f9fa; /* Light text color */
+    --text-dark: #212529; /* Dark text color */
 }
 
 body {
@@ -70,15 +74,27 @@ body {
 
 /* Navbar styles */
 .navbar {
-    background: var(--neutral-100) !important;
+    background-color: var(--primary-color);
     border-bottom: 1px solid var(--neutral-300);
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.05);
 }
 
 .navbar-brand {
     font-weight: 700;
-    color: var(--primary-dark) !important;
+    color: var(--accent-color);
     letter-spacing: 0.5px;
+}
+
+.navbar-nav .nav-link {
+    color: var(--text-light);
+}
+
+.navbar-nav .nav-link:hover {
+    color: var(--accent-color);
+}
+
+.navbar-text {
+    color: var(--text-light);
 }
 
 /* Card styles */
@@ -103,8 +119,8 @@ body {
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
+    background-color: var(--primary-light);
+    border-color: var(--primary-light);
     transform: translateY(-1px);
     box-shadow: 0 4px 6px rgba(101, 146, 135, 0.2);
 }
@@ -112,7 +128,7 @@ body {
 .btn-secondary {
     background-color: var(--accent-color);
     border-color: var(--accent-color);
-    color: var(--neutral-800);
+    color: var(--text-dark);
 }
 
 .btn-secondary:hover {

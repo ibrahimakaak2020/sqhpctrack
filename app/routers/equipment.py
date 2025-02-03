@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from app.forms.equipmentforms import AddMaintenanceForm
 from app.models import Equipment, MaintenanceRecord, MaintenanceStatus, User
 from app import db
 
@@ -6,11 +7,13 @@ equipment_bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 
 @equipment_bp.route('/')
 def equipment_master():
+    form=AddMaintenanceForm()
     equipments = Equipment.query.all()
-    return render_template('equipment/equipment_master.html', equipments=equipments)
+    return render_template('equipment/equipmentmaster.html', equipments=equipments, form=form)
 
 @equipment_bp.route('/add', methods=['POST'])
 def add_equipment():
+    
     if request.method == 'POST':
         sn = request.form['sn']
         model_name = request.form['model_name']

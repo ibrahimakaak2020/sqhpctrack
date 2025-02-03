@@ -15,16 +15,14 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(staffno=form.staffno.data).first()
-        print('user', user)
-        if user :
+        if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember_me.data)
             next_page = request.args.get('next')
-            print('next_page', next_page)
             if next_page:
                 return redirect(next_page)
             else:
                 return redirect(url_for('main.index'))
-        flash('Invalid username or password', 'danger')
+        flash('Invalid staff number or password', 'danger')
     return render_template('users/login.html', form=form)
 
 @users_bp.route('/logout')
@@ -34,11 +32,9 @@ def logout():
     return redirect(url_for('main.index'))
 
 @users_bp.route('/register', methods=['GET', 'POST'])
-#@login_required
 def register():
-    # if not current_user.isadmin:
-    #     flash('Only administrators can register new users', 'danger')
-    #     return redirect(url_for('main.index'))
+    if not current_user.is_authenticated:
+        return redirect(url_for('main.index'))
     
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -54,17 +50,24 @@ def register():
         return redirect(url_for('users.user_list'))
     return render_template('users/register.html', form=form)
 
-@users_bp.route('/users')
+@users_bp.route('/users', methods=['GET'])
 @login_required
-@admin_required
 def user_list():
-    users = User.query.all()
-    return render_template('users/list.html', users=users)
+    form = LoginForm()
+    page = request.args.get('page', 1, type=int)
+    search = request.args.get('search', '')
+    query = User.query
+
+    if search:
+        query = query.filter((User.staffno.like(f'%{search}%')) | (User.staffname.like(f'%{search}%')))
+
+    users = query.paginate(page=page, per_page=10)
+    return render_template('users/list.html', users=users, search=search,form=form)
 
 @users_bp.route('/users/<int:staffno>/edit', methods=['GET', 'POST'])
 @login_required
 def edit_user(staffno):
-    if not current_user.isadmin and current_user.staffno != staffno:
+    if not current_user.isadmin and current_user.staffno == staffno:
         flash('You do not have permission to edit this user', 'danger')
         return redirect(url_for('main.index'))
     
@@ -104,7 +107,7 @@ def delete_user(staffno):
 def user_profile(staffno):
     user = User.query.get_or_404(staffno)
     # Only admins can view any profile, regular users can only view their own
-    if not current_user.isadmin and current_user.staffno != staffno:
+    if not current_user.isadmin and current_user.staffno == staffno:
         flash('You do not have permission to view this profile', 'danger')
         return redirect(url_for('main.index'))
     

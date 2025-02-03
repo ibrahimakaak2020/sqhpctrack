@@ -9,6 +9,7 @@
         </button>
       </div>
       <form id="addEquipmentForm" method="POST" action="{{ url_for('equipment.add_equipment') }}">
+        {{ form.hidden_tag() }}
         <div class="modal-body">
           <div class="form-group">
             <label for="addEquipmentSN">Serial Number</label>
