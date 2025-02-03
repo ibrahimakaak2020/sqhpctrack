@@ -1,17 +1,22 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
+from flask_login import login_required
 from app.forms.equipmentforms import AddMaintenanceForm
 from app.models import Equipment, MaintenanceRecord, MaintenanceStatus, User
 from app import db
+from app.utils.decorators import admin_required
 
 equipment_bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 
 @equipment_bp.route('/')
+@login_required
 def equipment_master():
     form=AddMaintenanceForm()
     equipments = Equipment.query.all()
     return render_template('equipment/equipmentmaster.html', equipments=equipments, form=form)
 
 @equipment_bp.route('/add', methods=['POST'])
+@login_required
+@admin_required
 def add_equipment():
     
     if request.method == 'POST':
@@ -35,6 +40,8 @@ def add_equipment():
     return redirect(url_for('equipment.equipment_master'))
 
 @equipment_bp.route('/update/<string:sn>', methods=['POST'])
+@login_required
+@admin_required
 def update_equipment(sn):
     equipment = Equipment.query.get_or_404(sn)
     if request.method == 'POST':
@@ -49,6 +56,8 @@ def update_equipment(sn):
     return redirect(url_for('equipment.equipment_master'))
 
 @equipment_bp.route('/delete/<string:sn>', methods=['POST'])
+@login_required
+@admin_required
 def delete_equipment(sn):
     equipment = Equipment.query.get_or_404(sn)
     db.session.delete(equipment)
