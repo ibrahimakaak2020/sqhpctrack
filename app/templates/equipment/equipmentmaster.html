@@ -27,7 +27,7 @@
             <td>
                 <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEquipmentModal{{ equipment.sn }}">Edit</button>
                 <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEquipmentModal{{ equipment.sn }}">Delete</button>
-                <a href="{{ url_for('equipment.equipment_master', equipment_sn=equipment.sn) }}" class="btn btn-info btn-sm">View Maintenance</a>
+                <a href="{{ url_for('equipment.read', sn=equipment.sn) }}" class="btn btn-info btn-sm">View Maintenance</a>
             </td>
         </tr>
         {% endfor %}

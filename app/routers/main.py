@@ -14,9 +14,9 @@ def index():
 @login_required
 def dashboard():
     # Add any dashboard statistics or data you want to display
-    #total_equipment = Equipment.query.count()
+    total_equipment = Equipment.query.count()
     # under_maintenance_count = Equipment.query.all().count()
-    # active_maintenance_count = MaintenanceRecord.query.filter_by(isactive=True).count()
+    active_maintenance_count = MaintenanceRecord.query.filter_by(isactive=True).count()
     # closed_maintenance_count = MaintenanceRecord.query.filter_by(isactive=False).count()
 
     statuses = db.session.query(MaintenanceStatus.status, db.func.count(MaintenanceStatus.status)).group_by(MaintenanceStatus.status).all()
@@ -26,9 +26,9 @@ def dashboard():
     notification_count = 0  # Set this to your actual notification count logic
     stats = {
         'total_users': db.session.query(User).count(),
-        'total_equipment':0,
+        'total_equipment':total_equipment,
         'under_maintenance_count':0,
-        'active_maintenance_count':0,
+        'active_maintenance_count':active_maintenance_count,
         'closed_maintenance_count':0
         # Add more statistics as needed
     }

@@ -60,24 +60,33 @@ class Equipment(db.Model):
     note = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     created_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
-def __repr__(self):
-    """
-    Returns a string representation of the Equipment object.
+    def __repr__(self):
+        """
+        Returns a string representation of the Equipment object.
 
-    The string representation includes the model name and serial number of the equipment.
+        The string representation includes the model name and serial number of the equipment.
 
-    Parameters:
-    None
+        Parameters:
+        None
 
-    Returns:
-    str: A string representation of the Equipment object in the format '<Equipment {model_name} (SN: {sn})>'.
-    """
-    return f'<Equipment {self.model_name} (SN: {self.sn})>'
-    # Relationships
-    creator = db.relationship('User', backref=db.backref('created_equipment', lazy=True))
+        Returns:
+        str: A string representation of the Equipment object in the format '<Equipment {model_name} (SN: {sn})>'.
+        """
+        return f'<Equipment {self.model_name} (SN: {self.sn})>'
+        # Relationships
+        creator = db.relationship('User', backref=db.backref('created_equipment', lazy=True))
 
     def __repr__(self):
-        return f'<Equipment {self.model_name} (SN: {self.sn})>'
+            return f'<Equipment {self.model_name} (SN: {self.sn})>'
+    def get_active_maintenance(self):
+            """
+            Returns the active maintenance record for this equipment, if any.
+            An active maintenance record is one where the status is 'in_progress'.
+            """
+            return MaintenanceRecord.query.filter_by(
+                equipment_sn=self.sn,
+                isactive=True
+            ).first()
 
 class MaintenanceRecord(db.Model):
     __tablename__ = "maintenance_record"
