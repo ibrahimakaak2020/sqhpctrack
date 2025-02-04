@@ -375,11 +375,12 @@ form button {
     align-items: center;
     justify-content: center;
     margin-right: 1rem;
+    padding: 1rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
 .stat-icon i {
     font-size: 1.5rem;
-    color: #fff;
 }
 
 .stat-details h3 {
@@ -481,10 +482,7 @@ form button {
     border-color: #0d6efd;
 } 
 
-/* Layout */
-body {
-    padding-top: 56px;
-}
+
 
 .content-wrapper {
     padding: 20px;
@@ -604,4 +602,4 @@ body {
         max-height: none;
         flex: 1;
     }
-} 
+}

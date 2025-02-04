@@ -38,7 +38,7 @@ def add_equipment():
         new_equipment = Equipment(
             sn=sn, model_name=model_name, equipment_type=equipment_type,
             manufacturer=manufacturer, locname=locname, building=building,
-            note=note, created_by=created_by
+            note=note, created_by=current_user.staffno
         )
         db.session.add(new_equipment)
         db.session.commit()
@@ -190,9 +190,9 @@ def update_status(record_id):
 
 @equipment_bp.route('/new/<string:sn>', methods=['GET', 'POST'])
 @login_required
-def new_record(sn):
+def new_maintenance(sn):
     equipment = Equipment.query.get_or_404(sn)
-    form = MaintenanceRecordForm()
+    form = AddMaintenanceForm()
     if request.method == 'POST':
         print("*********** from POST")
         try:
@@ -311,54 +311,6 @@ def active_records():
     active_maintenance = MaintenanceRecord.query.filter(
         MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
-    return render_template('maintenance/active_records.html', records=active_maintenance)
+    return render_template('equipment/active_records.html', records=active_maintenance)
 
-# Equipment Registration (Admin Only)
-@equipment_bp.route('/equipment/register', methods=['GET', 'POST'])
-@login_required
-def equipment_register():
-    if not current_user.isadmin:
-        flash('Access denied. Admin privileges required.', 'danger')
-        return redirect(url_for('maintenance.equipment_list'))
-    
-    form = EquipmentRegistrationForm()  # Create an instance of your form class
-
-    if request.method == 'POST':
-        if form.validate_on_submit():  # Validate the form
-            try:
-                equipment = Equipment(
-                    sn=form.sn.data,
-                    model_name=form.model_name.data,
-                    # Add other fields as needed
-                )
-                db.session.add(equipment)
-                db.session.commit()
-                flash('Equipment registered successfully', 'success')
-                return redirect(url_for('maintenance.equipment_list'))
-            except Exception as e:
-                db.session.rollback()
-                flash(f'Error registering equipment: {str(e)}', 'danger')
-    
-    return render_template('maintenance/equipment_register.html', form=form)  # Pass the form to the template
-
-# Search Route
-@equipment_bp.route('/search')
-@login_required
-def search():
-    query = request.args.get('q', '')
-    if not query:
-        return redirect(url_for('maintenance.equipment_list'))
-    
-    equipment = Equipment.query.filter(
-        (Equipment.sn.ilike(f'%{query}%')) |
-        (Equipment.model_name.ilike(f'%{query}%'))
-    ).all()
-    
-    maintenance_records = MaintenanceRecord.query.filter(
-        MaintenanceRecord.problem_description.ilike(f'%{query}%')
-    ).all()
-    
-    return render_template('maintenance/search_results.html',
-                         query=query,
-                         equipment=equipment,
-                         maintenance_records=maintenance_records) 
+   

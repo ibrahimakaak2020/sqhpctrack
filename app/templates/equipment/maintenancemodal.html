@@ -1,0 +1,58 @@
+<!-- Modal -->
+<div class="modal fade" id="createMaintenanceModal" tabindex="-1" aria-labelledby="createMaintenanceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createMaintenanceModalLabel">Create New Maintenance Record</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="POST" action="{{ url_for('equipment.new_maintenance',sn=equipment.sn) }}">
+                
+                    
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="initial_status" class="form-label">Initial Status</label>
+                        <select class="form-select" id="initial_status" name="initial_status" required>
+                            <option value="PENDING">Pending</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="status_notes" class="form-label">Status Notes</label>
+                        <textarea class="form-control" id="status_notes" name="status_notes" rows="2"></textarea>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Maintenance Record</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Add event listener for when the modal is shown
+    var createMaintenanceModal = document.getElementById('createMaintenanceModal');
+    createMaintenanceModal.addEventListener('show.bs.modal', function (event) {
+        // Get the button that triggered the modal
+        var button = event.relatedTarget;
+        // Extract the equipment ID from the data attribute
+        var equipmentId = button.getAttribute('data-equipment-id');
+        
+        // You can now use equipmentId as needed, e.g., set it in a hidden input field
+        var form = createMaintenanceModal.querySelector('form');
+        var input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'equipment_id';
+        input.value = equipmentId;
+        form.appendChild(input);
+    });
+</script>
