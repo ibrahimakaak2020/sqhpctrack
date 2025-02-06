@@ -6,6 +6,7 @@ from flask_wtf import FlaskForm
 from wtforms import FloatField, SelectField, SubmitField, TextAreaField
 from app.forms.equipmentforms import AddEquipmentForm, AddMaintenanceForm
 from app.forms.maintenancerecordform import MaintenanceRecordForm
+from app.forms.maintenancestatus import MaintenanceStatusForm
 from app.models import CompanyUser, Equipment, MaintenanceRecord, MaintenanceStatus, User, Workshop
 from app import db
 from app.utils.decorators import admin_required
@@ -102,10 +103,11 @@ def delete_equipment(sn):
 def read(sn):
     equipment = Equipment.query.get_or_404(sn)
     form=MaintenanceRecordForm()
+    formstatus=MaintenanceStatusForm()
     return render_template('equipment/detail.html',
                          equipment=equipment,
                          current_datetime=localtime,
-                         current_user=current_user,get_user_name=User.get_user_name,form=form)
+                         current_user=current_user,get_user_name=User.get_user_name,form=form,formstatus=formstatus)
 
 
 
@@ -236,7 +238,7 @@ def new_maintenance(sn):
             # Save the maintenance record
             db.session.add(record)
             db.session.commit()
-            equipment.isundermaintenance=True
+           
             db.session.commit()
 
             
@@ -253,6 +255,7 @@ def new_maintenance(sn):
         except Exception as e:
             db.session.rollback()
             flash(f'Error creating maintenance record: {str(e)}', 'error')
+            print(e)
     
   
     return redirect(url_for('equipment.read', sn=sn))
@@ -320,3 +323,50 @@ def active_records():
         MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)
+
+
+
+# Initialize blueprint
+
+
+@equipment_bp.route('/maintenance/status/add', methods=['GET', 'POST'])
+@login_required
+def add_maintenance_status():
+   
+    
+    if request.formstatus.validate_on_submit():
+        try:
+            status = MaintenanceStatus(
+                maintenance_id=request.formstatus.maintenance_id.data,
+                maintenance_date=request.formstatus.maintenance_date.data,
+                workshop_id=request.formstatus.workshop_id.data if not request.formstatus.is_external.data else None,
+                company_id=request.formstatus.company_id.data if request.formstatus.is_external.data else None,
+                status=request.formstatus.status.data,
+                is_external=request.formstatus.is_external.data,
+                notes=request.formstatus.notes.data,
+                register_by=request.formstatus.register_by.data,
+                
+            )
+            
+            db.session.add(status)
+            db.session.commit()
+            
+            flash('Maintenance status added successfully.', 'success')
+            return jsonify({'success': True})
+            
+        except IntegrityError:
+            db.session.rollback()
+            flash('Error: Status already exists for this maintenance record.', 'danger')
+            return jsonify({'success': False, 'error': 'Status already exists'})
+        except Exception as e:
+            db.session.rollback()
+           
+            flash('Error adding maintenance status. Please try again.', 'danger')
+            return jsonify({'success': False, 'error': 'Unknown error occurred'})
+    
+    return render_template('maintenance/status_add.html', 
+                         title='Add Maintenance Status',
+                         status_choices=[('pending', 'Pending'), 
+                                       ('in-progress', 'In Progress'), 
+                                       ('complete', 'Complete'), 
+                                       ('closed', 'Closed')])

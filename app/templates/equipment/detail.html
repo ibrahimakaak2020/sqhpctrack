@@ -43,25 +43,30 @@
                     <div style="max-height: 300px; overflow-y: auto;">
                         {% set active_maintenance = equipment.get_active_maintenance() %}
                         {% if active_maintenance %}
-                        {% for maintenance in equipment.maintenance_records if maintenance.is_active %}
-                        <div class="mb-3 p-3 border rounded shadow-sm" style="background-color: #e9f7f9;">
-                            <h6 class="mb-1 text-primary">{{ maintenance.problem_description }}</h6>
-                            <p class="mb-0"><strong>Status:</strong> <span class="text-success">{{ maintenance.registered_by
+                        
+                        
+                        <div class="mb-3 p-3 border rounded shadow-sm" style="background-color: #faa96a;">
+                            <h6 class="mb-1 text-primary">{{ active_maintenance.problem_description }}</h6>
+                            <p class="mb-0"><strong>Status:</strong> <span class="text-success">{{ active_maintenance.isactive
+                                    }}</span></p>
+                            <p class="mb-0"><strong>Registered By:</strong> <span class="text-success">{{ get_user_name(active_maintenance.registered_by) or active_maintenance.registered_by
+                                    }}</span></p>
+                            <p class="mb-0"><strong>Workshop:</strong> <span class="text-muted">{{ active_maintenance.latest_status
                                     }}</span></p>
                             <p class="mb-0"><strong>Date:</strong> <span class="text-muted">{{
-                                    maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span></p>
+                                active_maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span></p>
                             <div class="btn-group mt-2">
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#updateStatusModal-{{ maintenance.id }}">
+                                    data-bs-target="#updateStatusModal-{{ active_maintenance.id }}">
                                     <i class="bi bi-arrow-clockwise"></i> Update
                                 </button>
                                 <button class="btn btn-info btn-sm" data-bs-toggle="modal"
-                                    data-bs-target="#statusModal-{{ maintenance.id }}">
+                                    data-bs-target="#statusModal-{{ active_maintenance.id }}">
                                     <i class="bi bi-list-check"></i> History
                                 </button>
                             </div>
                         </div>
-                        {% endfor %}
+                        
                         {% else %}
                         <div class="alert alert-warning">
                             <i class="bi bi-exclamation-circle"></i> No active maintenance records found.
@@ -103,8 +108,8 @@
                 <tbody>
                     {% for maintenance in equipment.maintenance_records|sort(attribute='created_at', reverse=true) %}
                     <tr class="{% if maintenance.is_active %}table-warning{% endif %}">
-                        <td>{{ maintenance.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>{{ maintenance.description }}</td>
+                        <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>{{ maintenance.problem_description }}</td>
                         <td>
                             {% if maintenance.is_active %}
                             <span class="badge bg-warning text-dark">
@@ -142,7 +147,11 @@
         {% endif %}
     </div>
 </div>
-
+<div class="container">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStatusModal">
+        Add Maintenance Status
+    </button>
+    {% include 'equipment/addstatusmodal.html' %}
 <!-- Modals -->
 {% for maintenance in equipment.maintenance_records %}
 <!-- Status History Modal -->
@@ -174,13 +183,14 @@
                             <p class="mb-0" title="{{ status.notes }}">{{ status.notes }}</p>
                         </div>
                     </div>
+                  
                     {% endfor %}
                 </div>
             </div>
         </div>
     </div>
 </div>
-{% include 'equipment/update_status.html'%}
+
 {% endfor %}
 
 {% endblock %}

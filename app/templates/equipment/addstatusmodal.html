@@ -1,0 +1,68 @@
+
+  
+<!-- Modal -->
+<div class="modal fade" id="addStatusModal" tabindex="-1" aria-labelledby="addStatusModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addStatusModalLabel">Add Maintenance Status</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" id="statusForm">
+                {{ formstatus.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        {{ formstatus.maintenance_id.label }}
+                        {{ formstatus.maintenance_id(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ formstatus.maintenance_date.label }}
+                        {{ formstatus.maintenance_date(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ formstatus.status.label }}
+                        {{ formstatus.status(class="form-control") }}
+                    </div>
+
+                    <div id="external-status" style="display: none;">
+                        <div class="mb-3">
+                            {{ formstatus.company_id.label }}
+                            {{ formstatus.company_id(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div id="internal-status" style="display: none;">
+                        <div class="mb-3">
+                            {{ formstatus.workshop_id.label }}
+                            {{ formstatus.workshop_id(class="form-control") }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        {{ formstatus.is_external(class="form-check-input") }}
+                        {{ formstatus.is_external.label(class="form-check-label") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ formstatus.notes.label }}
+                        {{ formstatus.notes(class="form-control") }}
+                    </div>
+
+                    <div class="mb-3">
+                        {{ formstatus.register_by.label }}
+                        {{ formstatus.register_by(class="form-control") }}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Status</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+

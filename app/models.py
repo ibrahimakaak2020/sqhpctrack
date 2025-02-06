@@ -77,7 +77,8 @@ class Equipment(db.Model):
         """
         return f'<Equipment {self.model_name} (SN: {self.sn})>'
         # Relationships
-        creator = db.relationship('User', backref=db.backref('created_equipment', lazy=True))
+    creator = db.relationship('User', backref=db.backref('created_equipment', lazy=True))
+    maintenance_records = db.relationship('MaintenanceRecord', back_populates='equipment_rel', overlaps='equipment_ref')
 
     def __repr__(self):
             return f'<Equipment {self.model_name} (SN: {self.sn})>'
@@ -96,14 +97,14 @@ class MaintenanceRecord(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     equipment_sn = db.Column(db.String(50), db.ForeignKey('equipment.sn'), nullable=False)
-    maintenance_id = db.Column(db.Integer, nullable=False)
+    
     registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
     maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     isactive = db.Column(db.Boolean, default=True)
     problem_description = db.Column(db.Text, nullable=False)
 
     # Relationships
-    equipment = db.relationship('Equipment', backref=db.backref('maintenance_records', lazy=True))
+    equipment_rel = db.relationship('Equipment', back_populates='maintenance_records', overlaps='equipment_ref')
     user = relationship('User', back_populates='registered_maintenance')
     
     def __repr__(self):
@@ -111,8 +112,7 @@ class MaintenanceRecord(db.Model):
 
     @property
     def latest_status(self):
-        return self.status_updates.order_by(MaintenanceStatus.status_date.desc()).first()
-
+        return self.status_updates.order_by(MaintenanceStatus.status_date.desc()).first().status
 class MaintenanceStatus(db.Model):
     __tablename__ = "maintenance_status"
 
