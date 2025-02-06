@@ -27,7 +27,21 @@
         {% endfor %}
     </tbody>
 </table>
+            <!-- Workshop Selection (shown if not external) -->
+            <div class="col-md-6" id="workshopSection">
+                <div class="form-floating">
+                    {{ form.workshop_id(class="form-control") }}
+                    {{ form.workshop_id.label }}
+                </div>
+            </div>
 
+            <!-- Company Selection (shown if external) -->
+            <div class="col-md-6 d-none" id="companySection">
+                <div class="form-floating">
+                    {{ form.company_id(class="form-control") }}
+                    {{ form.company_id.label }}
+                </div>
+            </div>
 <!-- Include Modals -->
 {% include 'maintenance/maintenance_modal.html' %}
 {% endblock %}

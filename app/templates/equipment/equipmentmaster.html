@@ -1,39 +1,126 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<h2>Equipment Master</h2>
-<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">Add Equipment</button>
-<table class="table table-striped mt-3">
-    <thead>
-        <tr>
-            <th>SN</th>
-            <th>Model Name</th>
-            <th>Type</th>
-            <th>Manufacturer</th>
-            <th>Location</th>
-            <th>Building</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for equipment in equipments %}
-        <tr>
-            <td>{{ equipment.sn }}</td>
-            <td>{{ equipment.model_name }}</td>
-            <td>{{ equipment.equipment_type }}</td>
-            <td>{{ equipment.manufacturer }}</td>
-            <td>{{ equipment.locname }}</td>
-            <td>{{ equipment.building }}</td>
-            <td>
-                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editEquipmentModal{{ equipment.sn }}">Edit</button>
-                <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteEquipmentModal{{ equipment.sn }}">Delete</button>
-                <a href="{{ url_for('equipment.read', sn=equipment.sn) }}" class="btn btn-info btn-sm">View Maintenance</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="container-fluid px-4 py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="h3 mb-0">Equipment Master List</h2>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addEquipmentModal">
+            <i class="bi bi-plus-circle me-2"></i>Add Equipment
+        </button>
+    </div>
 
-<!-- Include Modals -->
-{% include 'equipment/equipment_modal.html' %}
+    <!-- Search and Filter -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="searchInput" placeholder="Search equipment...">
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <select class="form-select" id="typeFilter">
+                        <option value="">All Types</option>
+                        <option value="CPU">CPU</option>
+                        <option value="Monitor">Monitor</option>
+                        <option value="Printer">Printer</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Equipment Table -->
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th scope="col">Serial Number</th>
+                            <th scope="col">Model Name</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Manufacturer</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for equipment in equipments %}
+                        <tr>
+                            <td>{{ equipment.sn }}</td>
+                            <td>{{ equipment.model_name }}</td>
+                            <td>
+                                <span class="badge bg-secondary">{{ equipment.equipment_type }}</span>
+                            </td>
+                            <td>{{ equipment.manufacturer }}</td>
+                            <td>
+                                <small class="text-muted">
+                                    <i class="bi bi-geo-alt"></i> {{ equipment.locname }}
+                                    <br>{{ equipment.building }}
+                                </small>
+                            </td>
+                            <td>
+                                {% if equipment.isundermaintenance %}
+                                <span class="badge bg-warning">Under Maintenance</span>
+                                {% else %}
+                                <span class="badge bg-success">Available</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <div class="btn-group">
+                                    <a href="{{ url_for('equipment.read', sn=equipment.sn) }}" 
+                                       class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-eye w-100"></i>
+                                    </a>
+                                    <a href="#" 
+                                       class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-pencil w-100"></i>
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#deleteModal{{ equipment.sn }}">
+                                        <i class="bi bi-trash w-100"></i>
+                                    </button>
+                                </div>
+                                {% include 'equipment/deleteEquipmentmodal.html' %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Include Modal Templates -->
+    {% include 'equipment/equipment_modal.html' %}
+</div>
+
+<!-- Custom Scripts -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const typeFilter = document.getElementById('typeFilter');
+    const tableRows = document.querySelectorAll('tbody tr');
+
+    function filterTable() {
+        const searchTerm = searchInput.value.toLowerCase();
+        const filterType = typeFilter.value.toLowerCase();
+
+        tableRows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            const type = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            const matchesSearch = text.includes(searchTerm);
+            const matchesType = filterType === '' || type.includes(filterType);
+            row.style.display = matchesSearch && matchesType ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', filterTable);
+    typeFilter.addEventListener('change', filterTable);
+});
+</script>
 {% endblock %}

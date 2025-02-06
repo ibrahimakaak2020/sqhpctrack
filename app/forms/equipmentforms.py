@@ -1,7 +1,7 @@
 # app/main/forms.py
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, BooleanField, DateTimeField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired
+from wtforms.validators import DataRequired, Length
 
 class AddMaintenanceForm(FlaskForm):
     equipment_sn = IntegerField('Equipment Serial Number', validators=[DataRequired()])
@@ -22,3 +22,33 @@ class UpdateMaintenanceStatusForm(FlaskForm):
     notes = TextAreaField('Notes')
     register_by = IntegerField('Registered By', validators=[DataRequired()])
     submit = SubmitField('Update Status')
+
+class AddEquipmentForm(FlaskForm):
+    sn = StringField('Serial Number', validators=[
+        DataRequired(), 
+        Length(min=1, max=50)
+    ])
+    model_name = StringField('Model Name', validators=[
+        DataRequired(),
+        Length(min=1, max=100)
+    ])
+    equipment_type = StringField('Equipment Type', validators=[
+        DataRequired(),
+        Length(min=1, max=50)
+    ])
+    manufacturer = StringField('Manufacturer', validators=[
+        DataRequired(),
+        Length(min=1, max=100)
+    ])
+    locname = StringField('Location Name', validators=[
+        DataRequired(),
+        Length(min=1, max=100)
+    ])
+    building = StringField('Building', validators=[
+        DataRequired(),
+        Length(min=1, max=100)
+    ])
+    note = TextAreaField('Note', validators=[
+        Length(max=200)
+    ])
+    submit = SubmitField('Add Equipment')

@@ -4,19 +4,26 @@ from flask import Blueprint, jsonify, render_template, request, redirect, url_fo
 from flask_login import current_user, login_required
 from flask_wtf import FlaskForm
 from wtforms import FloatField, SelectField, SubmitField, TextAreaField
-from app.forms.equipmentforms import AddMaintenanceForm
+from app.forms.equipmentforms import AddEquipmentForm, AddMaintenanceForm
 from app.forms.maintenancerecordform import MaintenanceRecordForm
 from app.models import CompanyUser, Equipment, MaintenanceRecord, MaintenanceStatus, User, Workshop
 from app import db
 from app.utils.decorators import admin_required
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
+from sqlalchemy.exc import IntegrityError
+from urllib.parse import urlparse
+
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 equipment_bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 
 @equipment_bp.route('/')
 @login_required
 def equipment_master():
-    form=AddMaintenanceForm()
+    form=AddEquipmentForm()
     equipments = Equipment.query.all()
     return render_template('equipment/equipmentmaster.html', equipments=equipments, form=form)
 
@@ -24,25 +31,44 @@ def equipment_master():
 @login_required
 @admin_required
 def add_equipment():
-    
-    if request.method == 'POST':
-        sn = request.form['sn']
-        model_name = request.form['model_name']
-        equipment_type = request.form['equipment_type']
-        manufacturer = request.form['manufacturer']
-        locname = request.form['locname']
-        building = request.form['building']
-        note = request.form['note']
-        created_by = request.form['created_by']
-
-        new_equipment = Equipment(
-            sn=sn, model_name=model_name, equipment_type=equipment_type,
-            manufacturer=manufacturer, locname=locname, building=building,
-            note=note, created_by=current_user.staffno
-        )
-        db.session.add(new_equipment)
-        db.session.commit()
-        flash('Equipment added successfully!', 'success')
+    form = AddEquipmentForm()
+    if form.validate_on_submit():
+        try:
+            # Check for existing equipment
+            existing_equipment = Equipment.query.filter_by(sn=form.sn.data).first()
+            if existing_equipment:
+                flash('Equipment with this Serial Number already exists.', 'danger')
+                return redirect(url_for('equipment.equipment_master'))
+            
+            # Create new equipment
+            new_equipment = Equipment(
+                sn=form.sn.data,
+                model_name=form.model_name.data,
+                equipment_type=form.equipment_type.data,
+                manufacturer=form.manufacturer.data,
+                locname=form.locname.data,
+                building=form.building.data,
+                note=form.note.data,
+                created_by=current_user.staffno
+            )
+            
+            db.session.add(new_equipment)
+            db.session.commit()
+            
+            logger.info(f'Equipment {new_equipment.sn} added by user {current_user.staffno}')
+            flash('Equipment added successfully!', 'success')
+            
+        except Exception as e:
+            db.session.rollback()
+            logger.error(f'Error adding equipment: {str(e)}')
+            flash(f'Error adding equipment: {str(e)}', 'danger')
+            
+        return redirect(url_for('equipment.equipment_master'))
+        
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(f'{getattr(form, field).label.text}: {error}', 'danger')
+            
     return redirect(url_for('equipment.equipment_master'))
 
 @equipment_bp.route('/update/<string:sn>', methods=['POST'])
@@ -75,10 +101,11 @@ def delete_equipment(sn):
 @equipment_bp.route('/<string:sn>')
 def read(sn):
     equipment = Equipment.query.get_or_404(sn)
+    form=MaintenanceRecordForm()
     return render_template('equipment/detail.html',
                          equipment=equipment,
                          current_datetime=localtime,
-                         current_user=current_user)
+                         current_user=current_user,get_user_name=User.get_user_name,form=form)
 
 
 
@@ -196,31 +223,17 @@ def new_maintenance(sn):
     if request.method == 'POST':
         print("*********** from POST")
         try:
-            print("*********** from try")
-            print(sn,request.form.get('is_external') == '1' )
+           
             record = MaintenanceRecord(
                 equipment_sn=sn,
-                registered_by=current_user.staffno,
-                is_external=request.form.get('is_external') == '1' ,
-                problem_description=request.form.get('problem_description'),
-                current_status='pending'
+                registered_by=current_user.staffno, 
+                problem_description=request.form.get('problem_description')
+                
             )
           
             
-            if record.is_external:
-                record.company_id = form.company_id.data
-                if form.is_external.data:
-                    company_id = form.company_id.data
-                    if company_id is None:
-                        # Handle the case where company_id is required for external maintenance
-                        flash("Company ID is required for external maintenance.", "error")
-                        return redirect(url_for('maintenance_record'))
-                    else:
-                        print(company_id)
-                
-            else:
-                record.workshop_id = request.form.get('workshop_id', type=int)
-            print("******************",record)
+           
+            # Save the maintenance record
             db.session.add(record)
             db.session.commit()
             equipment.isundermaintenance=True
@@ -241,13 +254,8 @@ def new_maintenance(sn):
             db.session.rollback()
             flash(f'Error creating maintenance record: {str(e)}', 'error')
     
-    # Get available workshops and companies for the form
-    workshops = Workshop.query.all()
-    companies = CompanyUser.query.all()
-    return render_template('maintenance/new.html', form=form,
-                         equipment=equipment,
-                         workshops=workshops,
-                         companies=companies)
+  
+    return redirect(url_for('equipment.read', sn=sn))
 
 @equipment_bp.route('/record/<int:record_id>/delete', methods=['POST'])
 @login_required
@@ -288,9 +296,9 @@ def get_status_history(record_id):
     } for status in status_updates])
 
 # Equipment List Route
-@equipment_bp.route('/equipment')
+@equipment_bp.route('/equipment/<string:sn>')
 @login_required
-def equipment_list():
+def view_equipment(sn):
     equipment = Equipment.query.all()
     # Get all active maintenance records for each equipment
     maintenance_records = {}
@@ -312,5 +320,3 @@ def active_records():
         MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)
-
-   

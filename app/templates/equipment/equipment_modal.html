@@ -1,56 +1,107 @@
-<!-- Add Equipment Modal -->
-<div class="modal fade" id="addEquipmentModal" tabindex="-1" role="dialog" aria-labelledby="addEquipmentModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="addEquipmentModalLabel">Add Equipment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="addEquipmentForm" method="POST" action="{{ url_for('equipment.add_equipment') }}">
-        {{ form.hidden_tag() }}
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="addEquipmentSN">Serial Number</label>
-            <input type="text" class="form-control" id="addEquipmentSN" name="sn" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentModelName">Model Name</label>
-            <input type="text" class="form-control" id="addEquipmentModelName" name="model_name" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentType">Equipment Type</label>
-            <input type="text" class="form-control" id="addEquipmentType" name="equipment_type" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentManufacturer">Manufacturer</label>
-            <input type="text" class="form-control" id="addEquipmentManufacturer" name="manufacturer" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentLocname">Location Name</label>
-            <input type="text" class="form-control" id="addEquipmentLocname" name="locname" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentBuilding">Building</label>
-            <input type="text" class="form-control" id="addEquipmentBuilding" name="building" required>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentNote">Note</label>
-            <textarea class="form-control" id="addEquipmentNote" name="note" rows="3"></textarea>
-          </div>
-          <div class="form-group">
-            <label for="addEquipmentCreatedBy">Created By</label>
-            <input type="text" class="form-control" id="addEquipmentCreatedBy" name="created_by" required>
-          </div>
+<!-- 
+ Add Equipment Modal -->
+<div class="modal fade" id="addEquipmentModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle me-2"></i>Add New Equipment
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            
+            <form method="POST" action="{{ url_for('equipment.add_equipment') }}" class="needs-validation" novalidate>
+                {{ form.hidden_tag() }}
+                <div class="modal-body">
+                    <div class="row g-3">
+                        <!-- Serial Number -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.sn(class="form-control", placeholder="Enter Serial Number") }}
+                                {{ form.sn.label }}
+                                <div class="invalid-feedback">
+                                    Please provide a valid serial number.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Model Name -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.model_name(class="form-control", placeholder="Enter Model Name") }}
+                                {{ form.model_name.label }}
+                                <div class="invalid-feedback">
+                                    Please provide a model name.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Equipment Type -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.equipment_type(class="form-control", placeholder="Enter Equipment Type") }}
+                                {{ form.equipment_type.label }}
+                                <div class="invalid-feedback">
+                                    Please specify equipment type.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Manufacturer -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.manufacturer(class="form-control", placeholder="Enter Manufacturer") }}
+                                {{ form.manufacturer.label }}
+                                <div class="invalid-feedback">
+                                    Please provide manufacturer name.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.locname(class="form-control", placeholder="Enter Location") }}
+                                {{ form.locname.label }}
+                                <div class="invalid-feedback">
+                                    Please specify location.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Building -->
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                {{ form.building(class="form-control", placeholder="Enter Building") }}
+                                {{ form.building.label }}
+                                <div class="invalid-feedback">
+                                    Please specify building.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Notes -->
+                        <div class="col-12">
+                            <div class="form-floating">
+                                {{ form.note(class="form-control", style="height: 100px", placeholder="Enter Notes") }}
+                                {{ form.note.label }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x-circle me-2"></i>Cancel
+                    </button>
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        <i class="bi bi-check-circle me-2"></i>Save Equipment
+                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-primary">Add Equipment</button>
-        </div>
-      </form>
     </div>
-  </div>
 </div>
 
 <!-- Edit Equipment Modal -->
@@ -107,30 +158,6 @@
   </div>
 </div>
 
-<!-- Delete Equipment Modal -->
-<div class="modal fade" id="deleteEquipmentModal" tabindex="-1" role="dialog" aria-labelledby="deleteEquipmentModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="deleteEquipmentModalLabel">Delete Equipment</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <form id="deleteEquipmentForm" method="POST">
-        <div class="modal-body">
-          <p>Are you sure you want to delete this equipment?</p>
-          <input type="hidden" id="deleteEquipmentId" name="id">
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="submit" class="btn btn-danger">Delete</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <script>
   // Populate the edit modal with the current equipment data
   $('#editEquipmentModal').on('show.bs.modal', function (event) {
@@ -166,6 +193,24 @@
     modal.find('#deleteEquipmentForm').attr('action', '/equipment/' + id + '/delete');
     modal.find('#deleteEquipmentId').val(id);
   });
+
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            } else {
+                document.querySelector('#submitBtn .spinner-border').classList.remove('d-none')
+                document.querySelector('#submitBtn').setAttribute('disabled', true)
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
 </script>
 
 <!-- Edit and Delete Modals -->

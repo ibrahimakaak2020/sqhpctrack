@@ -1,14 +1,21 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, TextAreaField, DateTimeField, BooleanField, SelectField, FloatField
+from wtforms import HiddenField, StringField, SubmitField, TextAreaField, DateTimeField, BooleanField, SelectField, FloatField
 from wtforms.validators import DataRequired, Optional
 from datetime import datetime
 
-from app.models import CompanyUser, Equipment, User, Workshop
+from app.models import CompanyUser as Company, Equipment, User, Workshop
 
 class MaintenanceRecordForm(FlaskForm):
-    maintenance_date = DateTimeField('Maintenance Date', default=datetime.utcnow, validators=[Optional()])
-    equipment_sn = SelectField('Equipment Serial Number', coerce=str, validators=[DataRequired()])
-    registered_by = SelectField('Registered By', coerce=int, validators=[DataRequired()])
+    #maintenance_date = DateTimeField('Maintenance Date', default=datetime.utcnow, validators=[Optional()])
+    # workshop_id = SelectField('Workshop', 
+    #     choices=[], 
+    #     coerce=int,
+    #     validators=[DataRequired()])
+    # company_id = SelectField('Company', 
+    #     choices=[], 
+    #     coerce=int,
+    #     validators=[DataRequired()])
+    #registered_by = SelectField('Registered By', coerce=int, validators=[DataRequired()])
   
     problem_description = TextAreaField('Problem Description', validators=[DataRequired()])
     
@@ -29,8 +36,10 @@ class MaintenanceRecordForm(FlaskForm):
         
         # Populate workshop_id if there are workshops
         # Assuming `Workshop` is a model with `id` and `workshopname` attributes
-        self.workshop_id.choices = [(workshop.id, workshop.workshopname,workshop.building) for workshop in Workshop.query.all()]
+        #self.workshop_id.choices = [(w.id, f"{w.workshopname} - {w.building}") 
+                                  #for w in Workshop.query.all()]
         
         # Populate company_id if there are companies
-        # Assuming `CompanyUser` is a model with `cid` and `companyname_en` attributes
-        self.company_id.choices = [(company.cid, company.companyname_en) for company in CompanyUser.query.all()]
+        # Assuming `Company` is a model with `id` and `name` attributes
+        #self.company_id.choices = [(c.cid, f"{c.companyname_en} - {c.staffname}") 
+                                # for c in Company.query.all()]

@@ -23,7 +23,10 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-
+    @staticmethod
+    def get_user_name(staffno):
+        user = User.query.filter_by(staffno=staffno).first()
+        return user.staffname if user else 'Unknown User'
     # Define the relationship
     registered_maintenance = relationship('MaintenanceRecord', back_populates='user')
     
