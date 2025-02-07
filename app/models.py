@@ -112,7 +112,13 @@ class MaintenanceRecord(db.Model):
 
     @property
     def latest_status(self):
-        return self.status_updates.order_by(MaintenanceStatus.status_date.desc()).first().status
+        latest_status = MaintenanceStatus.query.filter_by(maintenance_id=self.id).order_by(MaintenanceStatus.status_date.desc()).first()
+        if latest_status:
+            print(f"Latest status for MaintenanceRecord {self.id}: {latest_status.status} on {latest_status.status_date}")
+            return latest_status.status
+        else:
+            print(f"No status updates found for MaintenanceRecord {self.id}")
+            return None
 class MaintenanceStatus(db.Model):
     __tablename__ = "maintenance_status"
 
@@ -127,6 +133,7 @@ class MaintenanceStatus(db.Model):
     register_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
 
     # Relationships
+    #maintenance = db.relationship('MaintenanceRecord', backref=db.backref('status_updates', lazy=True))
     maintenance = db.relationship('MaintenanceRecord', backref=db.backref('status_updates', lazy=True))
     workshop = db.relationship('Workshop', backref=db.backref('status_updates', lazy=True))
     company = db.relationship('CompanyUser', backref=db.backref('status_updates', lazy=True))

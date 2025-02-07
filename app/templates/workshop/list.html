@@ -10,18 +10,15 @@
             <h2 class="text-dark mb-1">Workshops Management</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                  
                     <li class="breadcrumb-item active">Workshops</li>
                 </ol>
             </nav>
         </div>
-      
         <div>
             <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
-                <i class="fas fa-plus-circle me-2"></i>Add New workshop
+                <i class="fas fa-plus-circle me-2"></i>Add New Workshop
             </a>
         </div>
-     
     </div>
 
     <!-- Search Form -->
@@ -30,16 +27,16 @@
             <form method="GET" action="{{ url_for('workshop.workshop_list') }}" class="row g-3 align-items-center" id="searchForm">
                 {{ search_form.hidden_tag() }}
                 <div class="col-md-4">
-                    <div class="search-box">
+                    <div class="search-box position-relative">
                         <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
-                        {{ search_form.search(class="form-control ps-5", placeholder="Search companies...", value=request.args.get('search', ''), id="searchInput") }}
+                        {{ search_form.search(class="form-control ps-5", placeholder="Search workshops...", value=request.args.get('search', ''), id="searchInput") }}
                     </div>
                 </div>
                 <div class="col-md-auto">
                     {{ search_form.submit(class="btn btn-primary") }}
                 </div>
                 <div class="col-md-auto">
-                    <a href="{{ url_for('workshop.workshop_list') }}" class="btn btn-outline-secondary">
+                    <a href="{{ url_for('workshop.workshop_list') }}" class="btn btn-outline-secondary" id="resetSearch">
                         <i class="fas fa-sync-alt me-2"></i>Reset
                     </a>
                 </div>
@@ -47,7 +44,7 @@
         </div>
     </div>
 
-    <!-- Companies List -->
+    <!-- Workshops List -->
     <div class="card shadow-sm">
         <div class="card-body p-0">
             {% if workshops %}
@@ -59,9 +56,7 @@
                             <th>Workshop Name</th>
                             <th>Building</th>
                             <th>Contact</th>
-                            
                             <th class="text-end pe-4">Actions</th>
-                           
                         </tr>
                     </thead>
                     <tbody>
@@ -74,13 +69,10 @@
                                         {{ workshop.workshopname[:2].upper() }}
                                     </div>
                                     {{ workshop.workshopname }}
-                                  
                                 </div>
                             </td>
                             <td>{{ workshop.building }}</td>
                             <td class="arabic-text">{{ workshop.contact }}</td>
-                            
-                          
                             <td class="text-end pe-4">
                                 <div class="btn-group">
                                     <a href="{{ url_for('workshop.edit_workshop', id=workshop.id) }}" 
@@ -97,10 +89,8 @@
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </div>
-
                                 {% include 'workshop/partials/delete_modal.html' %}
                             </td>
-                           
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -122,7 +112,7 @@
                 </p>
                 {% if current_user.isadmin %}
                 <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle me-2"></i>Add First workshop
+                    <i class="fas fa-plus-circle me-2"></i>Add First Workshop
                 </a>
                 {% endif %}
             </div>
@@ -132,7 +122,6 @@
 </div>
 
 {% endblock %}
-
 
 {% block extra_js %}
 <script>
@@ -162,4 +151,4 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-{% endblock %} 
+{% endblock %}

@@ -102,10 +102,12 @@ def delete_equipment(sn):
 @equipment_bp.route('/<string:sn>')
 def read(sn):
     equipment = Equipment.query.get_or_404(sn)
+    maintenance= MaintenanceRecord.query.filter_by(equipment_sn=sn).order_by(MaintenanceRecord.maintenance_date.desc()).all()
+   
     form=MaintenanceRecordForm()
     formstatus=MaintenanceStatusForm()
     return render_template('equipment/detail.html',
-                         equipment=equipment,
+                         equipment=equipment,maintenance=maintenance,
                          current_datetime=localtime,
                          current_user=current_user,get_user_name=User.get_user_name,form=form,formstatus=formstatus)
 

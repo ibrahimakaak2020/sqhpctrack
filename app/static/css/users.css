@@ -1,0 +1,38 @@
+/* User Form Styles */
+.form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(39, 68, 93, .25); /* Adjusted to match the new primary color */
+}
+
+/* User List Styles */
+.table td {
+    vertical-align: middle;
+}
+
+.btn-group .btn {
+    padding: 0.25rem 0.5rem;
+}
+
+.badge {
+    font-weight: 500;
+}
+
+/* Card Styles */
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.card-header {
+    background-color: var(--light-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* Modal Styles */
+.modal-header {
+    background-color: var(--light-color);
+}
+
+.modal-footer {
+    background-color: var(--light-color);
+}

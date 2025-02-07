@@ -1,0 +1,140 @@
+:root {
+    --primary-color: #27445D;
+    --secondary-color: #497D74;
+    --success-color: #71BBB2;
+    --info-color: #71BBB2; /* Using the same color as success for consistency */
+    --warning-color: #EFE9D5;
+    --danger-color: #dc3545; /* Keeping the original danger color */
+    --light-color: #EFE9D5;
+    --dark-color: #27445D;
+    --white-color: #ffffff;
+    --gray-color: #6c757d;
+    --gray-dark-color: #343a40;
+    --border-color: #dee2e6;
+    --background-color: #f8f9fa;
+}
+
+/* Layout */
+body {
+    /* padding-top: 56px; */ /* Remove this line to remove the top padding */
+}
+
+.content-wrapper {
+    padding: 20px;
+    min-height: 100vh; /* Adjusted to remove the padding-top calculation */
+    background: var(--background-color);
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand i {
+    margin-right: 0.5rem;
+}
+
+.nav-link i {
+    margin-right: 0.5rem;
+}
+
+/* Notifications */
+.notification-dropdown {
+    width: 320px;
+    padding: 0;
+}
+
+.notification-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.notification-body {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-item {
+    display: flex;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.notification-item:hover {
+    background-color: var(--light-color);
+}
+
+.notification-item.unread {
+    background-color: #f0f7ff;
+}
+
+.notification-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.75rem;
+}
+
+.notification-icon i {
+    color: white;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-content p {
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+}
+
+.notification-footer {
+    border-top: 1px solid #dee2e6;
+}
+
+/* Dropdown Menus */
+.dropdown-item i {
+    margin-right: 0.5rem;
+    width: 1rem;
+}
+
+/* Search Bar */
+.navbar .input-group {
+    width: 300px;
+}
+
+@media (max-width: 992px) {
+    .navbar .input-group {
+        width: 100%;
+        margin: 0.5rem 0;
+    }
+}
+
+/* Alert Messages */
+.alert {
+    margin-bottom: 1rem;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .notification-dropdown {
+        width: 100%;
+        position: fixed;
+        top: 56px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        transform: none !important;
+    }
+
+    .notification-body {
+        max-height: none;
+        flex: 1;
+    }
+}

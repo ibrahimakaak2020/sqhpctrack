@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>User List</title>
+    {% block styles %}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-   
-    {% block extra_css %}{% endblock %}
-
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    {% endblock %}
 </head>
 <body>
     {% include 'navbar.html' %}
-    <!-- ...existing code... -->
-
-
-    <div class="container mt-4">
+    
+    <div class="container">
         {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
                 {% for category, message in messages %}
@@ -34,9 +31,9 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-<script>
-    // Function to auto-close alerts
-    document.addEventListener('DOMContentLoaded', function() {
+    <script>
+        // Function to auto-close alerts
+        document.addEventListener('DOMContentLoaded', function() {
             // Get all alerts
             const alerts = document.querySelectorAll('.alert');
             
@@ -63,38 +60,36 @@
             });
         });
 
-        
-document.getElementById('is_external').addEventListener('change', function() {
-if (this.checked) {
-    document.getElementById('external-status').style.display = 'block';
-    document.getElementById('internal-status').style.display = 'none';
-} else {
-    document.getElementById('external-status').style.display = 'none';
-    document.getElementById('internal-status').style.display = 'block';
-}
-});
+        document.getElementById('is_external').addEventListener('change', function() {
+            if (this.checked) {
+                document.getElementById('external-status').style.display = 'block';
+                document.getElementById('internal-status').style.display = 'none';
+            } else {
+                document.getElementById('external-status').style.display = 'none';
+                document.getElementById('internal-status').style.display = 'block';
+            }
+        });
 
-document.getElementById('statusForm').addEventListener('submit', function(e) {
-e.preventDefault();
-const formData = new FormData(this);
+        document.getElementById('statusForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
 
-fetch("{{ url_for('equipment.add_maintenance_status') }}", {
-    method: 'POST',
-    body: formData
-})
-.then(response => response.json())
-.then(data => {
-    if (data.success) {
-        $('#addStatusModal').modal('hide');
-        alert('Maintenance status added successfully!');
-    } else {
-        alert(data.error || 'Error adding maintenance status');
-    }
-});
-});
+            fetch("{{ url_for('equipment.add_maintenance_status') }}", {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    $('#addStatusModal').modal('hide');
+                    alert('Maintenance status added successfully!');
+                } else {
+                    alert(data.error || 'Error adding maintenance status');
+                }
+            });
+        });
+    </script>
 
-</script>
-
-{% block extra_js %}{% endblock %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>
