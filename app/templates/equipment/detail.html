@@ -3,59 +3,94 @@
 
 {% block content %}
 <!-- Equipment Details Card -->
-<div class="card mb-4 shadow-sm border color-scheme-metallic">
+<div class="card mx-4 shadow-sm border color-scheme-metallic">
     <div class="card-header color-scheme-raspberry d-flex justify-content-between align-items-center">
-        <h3 class="card-title mb-0">{{ equipment.name }}</h3>
+        <h3 class="card-title mb-0">Equipment Details</h3>
         <a href="{{ url_for('equipment.equipment_master') }}" class="btn btn-light btn-sm">
             <i class="bi bi-arrow-left"></i> Back to List
         </a>
     </div>
     <div class="card-body">
+        <!-- Equipment Details -->
         <div class="row">
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <h5 class="border-bottom pb-2">Equipment Information</h5>
-                    <div class="card p-3" style="background-color: var(--light-color);">
-                        <p><strong><i class="bi bi-upc-scan"></i> Serial Number:</strong> <span class="text-muted">{{ equipment.sn }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Model Name:</strong> <span class="text-muted">{{ equipment.model_name }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Equipment Type:</strong> <span class="text-muted">{{ equipment.equipment_type }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Manufacturer:</strong> <span class="text-muted">{{ equipment.manufacturer }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Building:</strong> <span class="text-muted">{{ equipment.building }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Location:</strong> <span class="text-muted">{{ equipment.locname }}</span></p>
-                        <p><strong><i class="bi bi-file-text"></i> Note:</strong> <span class="text-muted">{{ equipment.note }}</span></p>
-                        <p><strong><i class="bi bi-calendar-plus"></i> Created:</strong> <span class="text-muted">{{ equipment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span></p>
-                        <p><strong><i class="bi bi-calendar-check"></i> Registered By:</strong> <span class="text-muted">{{ get_user_name(equipment.created_by) or equipment.created_by }}</span></p>
+            <div class="col-md-12">
+                <div class="card p-4 mb-4 border rounded shadow-sm" style="background-color: var(--light-color);">
+                    <!-- First Row: Equipment Information -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong><i class="bi bi-upc-scan me-2"></i> Serial Number:</strong> <span class="text-muted">{{ equipment.sn }}</span></p>
+                            <p><strong><i class="bi bi-file-text me-2"></i> Model Name:</strong> <span class="text-muted">{{ equipment.model_name }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="bi bi-file-text me-2"></i> Equipment Type:</strong> <span class="text-muted">{{ equipment.equipment_type }}</span></p>
+                            <p><strong><i class="bi bi-file-text me-2"></i> Manufacturer:</strong> <span class="text-muted">{{ equipment.manufacturer }}</span></p>
+                        </div>
+                    </div>
+    
+                    <!-- Second Row: Location Information with Note -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <p><strong><i class="bi bi-building me-2"></i> Building:</strong> <span class="text-muted">{{ equipment.building }}</span></p>
+                            <p><strong><i class="bi bi-geo-alt me-2"></i> Location:</strong> <span class="text-muted">{{ equipment.locname }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong><i class="bi bi-sticky me-2"></i> Note:</strong> <span class="text-muted">{{ equipment.note }}</span></p>
+                        </div>
+                    </div>
+    
+                    <!-- Third Row: Date and Registered By -->
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <p class="d-flex align-items-center"><strong><i class="bi bi-calendar-plus me-2"></i> Created:</strong> <span class="text-muted ms-2">{{ equipment.created_at.strftime('%Y-%m-%d %H:%M:%S') }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="d-flex align-items-center"><strong><i class="bi bi-person-check me-2"></i> Registered By:</strong> <span class="text-muted ms-2">{{ get_user_name(equipment.created_by) or equipment.created_by }}</span></p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-4">
-                    <h5 class="border-bottom pb-2">Maintenance Records</h5>
+        </div>
+    
+        <!-- Active Maintenance Record -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-4 mb-4 border rounded shadow-sm" style="background-color: var(--light-color);">
+                    <h5 class="border-bottom pb-2 mb-3 d-flex align-items-center">
+                        <i class="bi bi-tools me-2"></i> Active Maintenance Record
+                    </h5>
                     <div style="max-height: 300px; overflow-y: auto;">
                         {% set active_maintenance = equipment.get_active_maintenance() %}
                         {% if active_maintenance %}
                         <div class="mb-3 p-3 border rounded shadow-sm" style="background-color: var(--warning-color);">
-                            <h6 class="mb-1 text-primary">{{ active_maintenance.problem_description }}</h6>
-                            <p class="mb-0"><strong>Status:</strong> <span class="text-success">{{ active_maintenance.isactive }}</span></p>
-                            <p class="mb-0"><strong>Registered By:</strong> <span class="text-success">{{ get_user_name(active_maintenance.registered_by) or active_maintenance.registered_by }}</span></p>
-                            <p class="mb-0"><strong>Status Update:</strong> <span class="text-muted">{{ active_maintenance.latest_status }}</span></p>
-                            <p class="mb-0"><strong>Date:</strong> <span class="text-muted">{{ active_maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span></p>
-                            <div class="btn-group mt-2">
-                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal-{{ active_maintenance.id }}">
-                                    <i class="bi bi-arrow-clockwise"></i> Update
+                            <h6 class="mb-2 text-primary"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ active_maintenance.problem_description }}</h6>
+                            <p class="mb-1"><strong>Status:</strong> 
+                                <span class="badge bg-success ms-2">{{ active_maintenance.isactive }}</span>
+                            </p>
+                            <p class="mb-1"><strong>Registered By:</strong> 
+                                <span class="text-muted">{{ get_user_name(active_maintenance.registered_by) or active_maintenance.registered_by }}</span>
+                            </p>
+                            <p class="mb-1"><strong>Status Update:</strong> 
+                                <span class="text-muted">{{ active_maintenance.latest_status }}</span>
+                            </p>
+                            <p class="mb-1"><strong>Date:</strong> 
+                                <span class="text-muted">{{ active_maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span>
+                            </p>
+                            <div class="btn-group mt-3">
+                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ active_maintenance.id }}">
+                                    <i class="bi bi-arrow-clockwise me-1"></i> Update
                                 </button>
                                 <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal-{{ active_maintenance.id }}">
-                                    <i class="bi bi-list-check"></i> History
+                                    <i class="bi bi-list-check me-1"></i> History
                                 </button>
                             </div>
                         </div>
                         {% else %}
-                        <div class="alert alert-warning">
-                            <i class="bi bi-exclamation-circle"></i> No active maintenance records found.
+                        <div class="alert alert-warning d-flex align-items-center">
+                            <i class="bi bi-exclamation-circle-fill me-2"></i> No active maintenance records found.
                         </div>
                         <div class="mt-3">
-                            <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
-                                <i class="bi bi-plus-circle"></i> Register Maintenance
+                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
+                                <i class="bi bi-plus-circle me-2"></i> Register Maintenance
                             </button>
                             {% include 'equipment/maintenancemodal.html' %}
                         </div>
@@ -65,74 +100,107 @@
             </div>
         </div>
     </div>
-</div>
 
 <!-- Maintenance History Card -->
-<div class="card color-scheme-pink">
-    <div class="card-header bg-light">
-        <h4 class="mb-0"><i class="bi bi-clock-history"></i> Maintenance History</h4>
-    </div>
-    <div class="card-body">
-        {% if equipment.maintenance_records %}
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead class="table-light">
-                    <tr>
-                        <th><i class="bi bi-calendar"></i> Date</th>
-                        <th><i class="bi bi-file-text"></i> Description</th>
-                        <th><i class="bi bi-flag"></i> Status</th>
-                        <th><i class="bi bi-gear"></i> Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for maintenance in equipment.maintenance_records|sort(attribute='created_at', reverse=true) %}
-                    <tr class="{% if maintenance.is_active %}table-warning{% endif %}">
-                        <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                        <td>{{ maintenance.problem_description }}</td>
-                        <td>
-                            {% if maintenance.is_active %}
-                            <span class="badge bg-warning text-dark">
-                                <i class="bi bi-arrow-repeat"></i> Active
-                            </span>
-                            {% else %}
-                            <span class="badge bg-secondary">
-                                <i class="bi bi-check2-all"></i> Closed
-                            </span>
-                            {% endif %}
-                        </td>
-                        <td>
-                            <div class="btn-group">
-                                {% if maintenance.is_active %}
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#updateStatusModal-{{ maintenance.id }}">
-                                    <i class="bi bi-arrow-clockwise"></i> Update
-                                </button>
-                                {% endif %}
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal-{{ maintenance.id }}">
-                                    <i class="bi bi-list-check"></i> History
-                                </button>
+<!-- Maintenance History Card -->
+<div class="accordion" id="equipmentAccordion">
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                <i class="bi bi-clock-history me-2"></i> Equipment Maintenance History
+            </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse {% if equipment.maintenance_records %}show{% endif %}" aria-labelledby="headingOne" data-bs-parent="#equipmentAccordion">
+            <div class="accordion-body">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <!-- Search and Filter -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control" id="searchMaintenance" placeholder="Search by description..." onkeyup="filterTable()">
                             </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        {% else %}
-        <div class="alert alert-info">
-            <i class="bi bi-info-circle"></i> No maintenance records found.
-        </div>
-        {% endif %}
-    </div>
-</div>
+                            <div class="col-md-6">
+                                <select class="form-select" id="filterStatus" onchange="filterTable()">
+                                    <option value="">Filter by Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="closed">Closed</option>
+                                </select>
+                            </div>
+                        </div>
 
-<div class="container">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addStatusModal">
-        Add Maintenance Status
-    </button>
-    {% include 'equipment/addstatusmodal.html' %}
+                        {% if equipment.maintenance_records %}
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="maintenanceTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th><i class="bi bi-calendar"></i> Date</th>
+                                        <th><i class="bi bi-file-text"></i> Description</th>
+                                        <th><i class="bi bi-flag"></i> Status</th>
+                                        <th><i class="bi bi-gear"></i> Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for maintenance in equipment.maintenance_records|sort(attribute='created_at', reverse=true) %}
+                                    <tr class="maintenance-record {% if maintenance.is_active %}active-record{% else %}closed-record{% endif %}">
+                                        <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <span title="{{ maintenance.problem_description }}" data-bs-toggle="tooltip">
+                                                {{ maintenance.problem_description|truncate(50) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if maintenance.is_active %}
+                                            <span class="badge bg-warning text-dark">
+                                                <i class="bi bi-arrow-repeat"></i> Active
+                                            </span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-check2-all"></i> Closed
+                                            </span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <div class="btn-group">
+                                                {% if maintenance.is_active %}
+                                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-maintenance-id="{{ maintenance.id }}" data-bs-toggle="tooltip" title="Update Status">
+                                                    <i class="bi bi-arrow-clockwise"></i> Update
+                                                </button>
+                                                {% endif %}
+                                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal-{{ maintenance.id }}" data-bs-toggle="tooltip" title="View Status History">
+                                                    <i class="bi bi-list-check"></i> History
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center mt-3">
+                            <button class="btn btn-secondary btn-sm" onclick="exportTableToCSV('maintenance_history.csv')">
+                                <i class="bi bi-download me-2"></i> Export as CSV
+                            </button>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-info d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill me-2"></i> No maintenance records found.
+                        </div>
+                        <div class="mt-3 text-center">
+                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
+                                <i class="bi bi-plus-circle me-2"></i> Register Maintenance
+                            </button>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <!-- Modals -->
+{% include 'equipment/addstatusmodal.html' %}
+
 {% for maintenance in equipment.maintenance_records %}
 <!-- Status History Modal -->
 <div class="modal fade" id="statusModal-{{ maintenance.id }}" tabindex="-1">
@@ -140,33 +208,75 @@
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title">
-                    <i class="bi bi-clock-history"></i> Maintenance Status History
+                    <i class="bi bi-clock-history me-2"></i> Maintenance Status History
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
-                <div class="timeline">
+                <ul class="timeline">
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
-                    <div class="timeline-item p-3 mb-3 border rounded shadow-sm" style="transition: background-color 0.3s;" onmouseover="this.style.backgroundColor='var(--light-color)';" onmouseout="this.style.backgroundColor='';">
-                        <div class="timeline-marker"></div>
-                        <div class="timeline-content">
-                            <div class="timeline-date text-muted mb-2">
-                                <i class="bi bi-calendar-event me-2"></i>
-                                {{ status.status_date.strftime('%B %d, %Y %I:%M %p') }}
+                    <li class="event mb-3">
+                        <div class="d-flex align-items-center">
+                            <div class="me-3">
+                                <i class="bi bi-record-circle-fill text-info"></i>
                             </div>
-                            <h6 class="mb-1 {% if status.status == 'COMPLETED' %}text-success{% elif status.status == 'IN_PROGRESS' %}text-primary{% elif status.status == 'ON_HOLD' %}text-warning{% endif %}">
-                                <i class="bi bi-record-circle me-2"></i> {{ status.status }}
-                            </h6>
-                            <p class="mb-0" title="{{ status.notes }}">{{ status.notes }}</p>
+                            <div>
+                                <h6 class="mb-0">{{ status.status }}</h6>
+                                <small class="text-muted">{{ status.status_date.strftime('%B %d, %Y %I:%M %p') }}</small>
+                                <p class="mb-0 mt-1" title="{{ status.notes }}">{{ status.notes|truncate(100) }}</p>
+                            </div>
                         </div>
-                    </div>
+                    </li>
                     {% endfor %}
-                </div>
+                </ul>
             </div>
         </div>
     </div>
 </div>
 {% endfor %}
+</div>
+<!-- JavaScript for Filtering and Exporting -->
+<script>
+    // Filter Table by Search and Status
+    function filterTable() {
+        const search = document.getElementById("searchMaintenance").value.toLowerCase();
+        const filter = document.getElementById("filterStatus").value.toLowerCase();
+        const rows = document.querySelectorAll("#maintenanceTable tbody tr");
+
+        rows.forEach(row => {
+            const description = row.cells[1].innerText.toLowerCase();
+            const status = row.classList.contains("active-record") ? "active" : "closed";
+
+            const matchesSearch = description.includes(search);
+            const matchesFilter = filter === "" || status === filter;
+
+            row.style.display = matchesSearch && matchesFilter ? "" : "none";
+        });
+    }
+
+    // Export Table to CSV
+    function exportTableToCSV(filename) {
+        const table = document.getElementById("maintenanceTable");
+        let csv = [];
+        const rows = table.querySelectorAll("tr");
+
+        rows.forEach(row => {
+            const rowData = [];
+            const cols = row.querySelectorAll("td, th");
+
+            cols.forEach(col => {
+                rowData.push(`"${col.innerText.replace(/"/g, '""')}"`);
+            });
+
+            csv.push(rowData.join(","));
+        });
+
+        const csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+        const downloadLink = document.createElement("a");
+        downloadLink.download = filename;
+        downloadLink.href = URL.createObjectURL(csvFile);
+        downloadLink.click();
+    }
+</script>
 
 {% endblock %}
-

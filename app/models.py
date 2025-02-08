@@ -32,7 +32,7 @@ class User(db.Model, UserMixin):
     
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return User.query.get(user_id)
 
 class CompanyUser(db.Model):
     __tablename__ = "companyuser"
@@ -62,7 +62,7 @@ class Equipment(db.Model):
     building = db.Column(db.String(100), nullable=False)
     note = db.Column(db.String(200))
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    created_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
+    created_by = db.Column(db.String(80), db.ForeignKey('user.staffno'), nullable=False)
     def __repr__(self):
         """
         Returns a string representation of the Equipment object.
@@ -170,7 +170,7 @@ def set_maintenance_inactive(mapper, connection, target):
             db.session.commit()
 
 # Register event listeners
-event.listen(User, 'before_update', update_user_timestamp)
-event.listen(Equipment, 'before_insert', log_equipment_creation)
-event.listen(MaintenanceRecord, 'before_insert', check_active_maintenance)
-event.listen(MaintenanceStatus, 'before_insert', set_maintenance_inactive)
+#event.listen(User, 'before_update', update_user_timestamp)
+#event.listen(Equipment, 'before_insert', log_equipment_creation)
+#event.listen(MaintenanceRecord, 'before_insert', check_active_maintenance)
+#event.listen(MaintenanceStatus, 'before_insert', set_maintenance_inactive)

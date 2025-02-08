@@ -7,8 +7,18 @@ from wtforms.validators import DataRequired, Length
 from app.models import CompanyUser, Workshop
 
 class MaintenanceStatusForm(FlaskForm):
-    maintenance_id = IntegerField('Maintenance Record ID', validators=[DataRequired()])
-    maintenance_date = DateTimeField('Maintenance Date', default=datetime.utcnow, validators=[DataRequired()])
+    status = SelectField('Status', validators=[DataRequired()],
+                        choices=[
+                            ('received', 'Mark as Received'),
+                            ('sended', 'Mark as Sended'),
+                            ('pending', 'Mark as Pending'),
+                            ('in_progress', 'Start Repair'),
+                            ('completed', 'Mark as Completed'),
+                            ('closed', 'Mark as Closed'),
+                            ('cancelled', 'Cancel Maintenance')
+                        ])
+    is_external = BooleanField('External' , default=False)
+    notes = TextAreaField('Notes')
     workshop_id = SelectField('Workshop', 
         choices=[], 
         coerce=int,
@@ -17,12 +27,8 @@ class MaintenanceStatusForm(FlaskForm):
         choices=[], 
         coerce=int,
         validators=[DataRequired()])
-    registered_by = SelectField('Registered By', coerce=int, validators=[DataRequired()])
+  
     
-    status = StringField('Status', validators=[DataRequired(), Length(min=2, max=20)])
-    is_external = BooleanField('External')
-    notes = TextAreaField('Notes')
-    register_by = IntegerField('Registered By', validators=[DataRequired()])
     submit = SubmitField('Add Status')
 
     def __init__(self, *args, **kwargs):

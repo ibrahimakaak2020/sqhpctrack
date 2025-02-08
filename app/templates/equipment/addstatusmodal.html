@@ -8,18 +8,12 @@
                 <h5 class="modal-title" id="addStatusModalLabel">Add Maintenance Status</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" id="statusForm">
+            <form method="POST" id="statusForm" action="{{ url_for('equipment.update_status', id=active_maintenance.id) }}">
                 {{ formstatus.hidden_tag() }}
                 <div class="modal-body">
-                    <div class="mb-3">
-                        {{ formstatus.maintenance_id.label }}
-                        {{ formstatus.maintenance_id(class="form-control") }}
-                    </div>
+                
 
-                    <div class="mb-3">
-                        {{ formstatus.maintenance_date.label }}
-                        {{ formstatus.maintenance_date(class="form-control") }}
-                    </div>
+                    
 
                     <div class="mb-3">
                         {{ formstatus.status.label }}
@@ -50,10 +44,7 @@
                         {{ formstatus.notes(class="form-control") }}
                     </div>
 
-                    <div class="mb-3">
-                        {{ formstatus.register_by.label }}
-                        {{ formstatus.register_by(class="form-control") }}
-                    </div>
+                  
                 </div>
 
                 <div class="modal-footer">

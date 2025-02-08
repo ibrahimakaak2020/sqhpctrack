@@ -70,24 +70,7 @@
             }
         });
 
-        document.getElementById('statusForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const formData = new FormData(this);
-
-            fetch("{{ url_for('equipment.add_maintenance_status') }}", {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    $('#addStatusModal').modal('hide');
-                    alert('Maintenance status added successfully!');
-                } else {
-                    alert(data.error || 'Error adding maintenance status');
-                }
-            });
-        });
+        
     </script>
 
     {% block extra_js %}{% endblock %}

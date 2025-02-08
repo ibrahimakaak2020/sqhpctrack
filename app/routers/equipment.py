@@ -113,10 +113,6 @@ def read(sn):
 
 
 
-# Create Blueprint
-maintenance = Blueprint('maintenance', __name__, 
-                       template_folder='templates',
-                       url_prefix='/maintenance')
 
 # Constants
 status_colors = {
@@ -188,36 +184,37 @@ def record_detail(record_id):
                          status_updates=status_updates,
                          form=form)
 
-@equipment_bp.route('/record/<int:record_id>/update-status', methods=['POST'])
+@equipment_bp.route('/updatestatus/<int:id>', methods=['POST'])
 @login_required
-def update_status(record_id):
-    record = MaintenanceRecord.query.get_or_404(record_id)
-    form = StatusUpdateForm()
-    form.set_status_choices(record.current_status)
+def update_status(id):
+    record = MaintenanceRecord.query.get_or_404(id)
+    formstatus = MaintenanceStatusForm()
     
-    if form.validate_on_submit():
+    if formstatus.validate_on_submit():
         status_update = MaintenanceStatus(
-            maintenance_id=record_id,
-            status=form.status.data,
-            notes=form.notes.data,
-            updated_by=current_user.staffno
+            maintenance_id=id,
+            status=formstatus.status.data,
+            notes=formstatus.notes.data,
+            is_external=formstatus.is_external.data,
+            registered_by=current_user.staffno
         )
         
         # Update the main record
-        record.current_status = form.status.data
-        if form.status.data == 'completed':
-            record.completion_date = datetime.now(datetime.timezone.utc)
-            record.final_cost = form.final_cost.data
-            record.resolution_notes = form.resolution_notes.data
+        if formstatus.is_external.data:
+            record.company_id = formstatus.company_id.data
+        else:
+            record.workshop_id = formstatus.workshop_id.data
+        if request.formstatus.status.data == 'closed':
+            record.isactive = False
         
         db.session.add(status_update)
         db.session.commit()
         
         flash('Maintenance status updated successfully', 'success')
-        return redirect(url_for('maintenance.record_detail', record_id=record_id))
+        return redirect(url_for('equipment.read', sn=record.equipment_sn))
     
     flash('Error updating status', 'error')
-    return redirect(url_for('maintenance.record_detail', record_id=record_id))
+    return redirect(url_for('equipment.read', sn=record.equipment_sn))
 
 @equipment_bp.route('/new/<string:sn>', methods=['GET', 'POST'])
 @login_required
@@ -326,49 +323,3 @@ def active_records():
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)
 
-
-
-# Initialize blueprint
-
-
-@equipment_bp.route('/maintenance/status/add', methods=['GET', 'POST'])
-@login_required
-def add_maintenance_status():
-   
-    
-    if request.formstatus.validate_on_submit():
-        try:
-            status = MaintenanceStatus(
-                maintenance_id=request.formstatus.maintenance_id.data,
-                maintenance_date=request.formstatus.maintenance_date.data,
-                workshop_id=request.formstatus.workshop_id.data if not request.formstatus.is_external.data else None,
-                company_id=request.formstatus.company_id.data if request.formstatus.is_external.data else None,
-                status=request.formstatus.status.data,
-                is_external=request.formstatus.is_external.data,
-                notes=request.formstatus.notes.data,
-                register_by=request.formstatus.register_by.data,
-                
-            )
-            
-            db.session.add(status)
-            db.session.commit()
-            
-            flash('Maintenance status added successfully.', 'success')
-            return jsonify({'success': True})
-            
-        except IntegrityError:
-            db.session.rollback()
-            flash('Error: Status already exists for this maintenance record.', 'danger')
-            return jsonify({'success': False, 'error': 'Status already exists'})
-        except Exception as e:
-            db.session.rollback()
-           
-            flash('Error adding maintenance status. Please try again.', 'danger')
-            return jsonify({'success': False, 'error': 'Unknown error occurred'})
-    
-    return render_template('maintenance/status_add.html', 
-                         title='Add Maintenance Status',
-                         status_choices=[('pending', 'Pending'), 
-                                       ('in-progress', 'In Progress'), 
-                                       ('complete', 'Complete'), 
-                                       ('closed', 'Closed')])
