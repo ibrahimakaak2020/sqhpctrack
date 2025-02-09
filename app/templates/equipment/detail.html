@@ -142,7 +142,8 @@
                                 </thead>
                                 <tbody>
                                     {% for maintenance in equipment.maintenance_records|sort(attribute='created_at', reverse=true) %}
-                                    <tr class="maintenance-record {% if maintenance.is_active %}active-record{% else %}closed-record{% endif %}">
+                                   
+                                    <tr class="maintenance-record {% if maintenance.isactive %}active-record{% else %}closed-record{% endif %}">
                                         <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
                                             <span title="{{ maintenance.problem_description }}" data-bs-toggle="tooltip">
@@ -150,7 +151,7 @@
                                             </span>
                                         </td>
                                         <td>
-                                            {% if maintenance.is_active %}
+                                            {% if maintenance.isactive %}
                                             <span class="badge bg-warning text-dark">
                                                 <i class="bi bi-arrow-repeat"></i> Active
                                             </span>
@@ -228,11 +229,11 @@
                                 </p>
                                 {% if status.is_external %}
                                 <small class="text-muted mt-1 d-block">
-                                    <i class="bi bi-building"></i> External: {{ status.company.companyname_en if status.company else 'N/A' }}
+                                    <i class="bi bi-building"></i> External : {{ status.company.companyname_en if status.company else 'N/A' }}
                                 </small>
                                 {% else %}
                                 <small class="text-muted mt-1 d-block">
-                                    <i class="bi bi-tools"></i> Workshop: {{ status.workshop.workshopnames if status.workshop else 'N/A' }}
+                                    <i class="bi bi-tools"></i> Workshop : {{ (status.workshop.workshopname, status.workshop.building ) if status.workshop else 'N/A' }}
                                 </small>
                                 {% endif %}
                                 <small class="text-muted mt-1 d-block">

@@ -443,3 +443,108 @@
 .event.status-in-progress { border-left-color: #ffc107; }
 .event.status-completed { border-left-color: #198754; }
 .event.status-closed { border-left-color: #6c757d; }
+
+/* Active Maintenance Record */
+.active-record {
+    border-left: 4px solid #ff9800; /* Darker yellow for better contrast */
+    background: #fff8e1; /* Lighter yellow background */
+}
+
+/* Closed Maintenance Record */
+.closed-record {
+    border-left: 4px solid #757575; /* Darker gray for better contrast */
+    background: #f5f5f5; /* Lighter gray background */
+}
+
+/* Improved Color Scheme */
+:root {
+    --primary-color: #007bff; /* Blue */
+    --secondary-color: #6c757d; /* Gray */
+    --success-color: #28a745; /* Green */
+    --danger-color: #dc3545; /* Red */
+    --warning-color: #ffc107; /* Yellow */
+    --info-color: #17a2b8; /* Teal */
+    --light-color: #f8f9fa; /* Light Gray */
+    --dark-color: #343a40; /* Dark Gray */
+    --white-color: #ffffff; /* White */
+    --gray-color: #6c757d; /* Gray */
+    --gray-dark-color: #343a40; /* Dark Gray */
+    --border-color: #dee2e6; /* Light Border */
+}
+
+/* Sidebar */
+.maintenance-sidebar {
+    background: var(--light-color);
+    border-right: 1px solid var(--border-color);
+}
+
+.maintenance-sidebar .nav-link {
+    color: var(--dark-color);
+}
+
+.maintenance-sidebar .nav-link:hover {
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+.maintenance-sidebar .nav-link.active {
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+/* Stats Cards */
+.stat-card {
+    background: var(--white-color);
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+.stat-icon {
+    background: var(--primary-color);
+}
+
+.stat-details h3 {
+    color: var(--dark-color);
+}
+
+.stat-details p {
+    color: var(--gray-color);
+}
+
+/* Tables */
+.table th {
+    background: var(--light-color);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.table td {
+    color: var(--dark-color);
+}
+
+/* Status badges */
+.badge {
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+/* Forms */
+.btn-check:checked + .btn-outline-primary {
+    background: var(--primary-color);
+    color: var(--white-color);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .maintenance-container {
+        flex-direction: column;
+    }
+    
+    .maintenance-sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    .stat-card {
+        margin-bottom: 1rem;
+    }
+}

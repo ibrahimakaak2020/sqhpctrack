@@ -92,13 +92,13 @@
                         <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
                         <td>{{ maintenance.problem_description }}</td>
                         <td>
-                            {% if maintenance.is_active %}
+                            {% if maintenance.isactive %}
                             <span class="badge bg-warning text-dark">
-                                <i class="bi bi-arrow-repeat"></i> Active
+                                <i class="bi bi-arrow-repeat"></i> Active {{maintenance.isactive}}
                             </span>
                             {% else %}
                             <span class="badge bg-secondary">
-                                <i class="bi bi-check2-all"></i> Closed
+                                <i class="bi bi-check2-all"></i> Closed {{maintenance.isactive}}
                             </span>
                             {% endif %}
                         </td>

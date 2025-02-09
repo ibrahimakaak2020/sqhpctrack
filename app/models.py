@@ -120,6 +120,14 @@ class MaintenanceRecord(db.Model):
             print(f"No status updates found for MaintenanceRecord {self.id}")
             return None
 
+    def set_active(self):
+        self.isactive = True
+        db.session.commit()
+
+    def set_closed(self):
+        self.isactive = False
+        db.session.commit()
+
 class MaintenanceStatus(db.Model):
     __tablename__ = 'maintenance_status'
 

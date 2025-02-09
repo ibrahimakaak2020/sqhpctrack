@@ -14,10 +14,7 @@
     --background-color: #f8f9fa;
 }
 
-/* Layout */
-body {
-    /* padding-top: 56px; */ /* Remove this line to remove the top padding */
-}
+
 
 .content-wrapper {
     padding: 20px;

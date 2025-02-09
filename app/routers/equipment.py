@@ -203,13 +203,13 @@ def update_status(id):
             
             # Update the main record relationships
             if formstatus.is_external.data:
-                company = CompanyUser.query.get(1)
+                company = CompanyUser.query.get(formstatus.company_id.data)
                 if company:
-                    record.company_id = company.cid
+                    status_update.company_id = company.cid
             else:
-                workshop = Workshop.query.get(1)
+                workshop = Workshop.query.get(formstatus.workshop_id.data)
                 if workshop:
-                    record.workshop_id = workshop.id
+                    status_update.workshop_id = workshop.id
                     
             if formstatus.status.data == 'closed':
                 record.isactive = False

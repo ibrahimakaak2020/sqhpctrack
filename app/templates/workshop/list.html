@@ -16,7 +16,7 @@
         </div>
         <div>
             <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
-                <i class="fas fa-plus-circle me-2"></i>Add New Workshop
+                <i class="bi bi-plus-circle me-2"></i>Add New Workshop
             </a>
         </div>
     </div>
@@ -28,7 +28,7 @@
                 {{ search_form.hidden_tag() }}
                 <div class="col-md-4">
                     <div class="search-box position-relative">
-                        <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
+                        <i class="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3"></i>
                         {{ search_form.search(class="form-control ps-5", placeholder="Search workshops...", value=request.args.get('search', ''), id="searchInput") }}
                     </div>
                 </div>
@@ -37,7 +37,7 @@
                 </div>
                 <div class="col-md-auto">
                     <a href="{{ url_for('workshop.workshop_list') }}" class="btn btn-outline-secondary" id="resetSearch">
-                        <i class="fas fa-sync-alt me-2"></i>Reset
+                        <i class="bi bi-arrow-clockwise me-2"></i>Reset
                     </a>
                 </div>
             </form>
@@ -79,14 +79,14 @@
                                        class="btn btn-sm btn-outline-primary" 
                                        data-bs-toggle="tooltip" 
                                        title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                        <i class="bi bi-pencil"></i>
                                     </a>
                                     <button type="button" 
                                             class="btn btn-sm btn-outline-danger" 
                                             data-bs-toggle="modal"
                                             data-bs-target="#deleteModal{{ workshop.id }}"
                                             title="Delete">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="bi bi-trash"></i>
                                     </button>
                                 </div>
                                 {% include 'workshop/partials/delete_modal.html' %}
@@ -112,7 +112,7 @@
                 </p>
                 {% if current_user.isadmin %}
                 <a href="{{ url_for('workshop.add_workshop') }}" class="btn btn-primary">
-                    <i class="fas fa-plus-circle me-2"></i>Add First Workshop
+                    <i class="bi bi-plus-circle me-2"></i>Add First Workshop
                 </a>
                 {% endif %}
             </div>
@@ -152,3 +152,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 {% endblock %}
+
+{% block extra_css %}
+<!-- Add Bootstrap Icons CDN link -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
+{% endblock %}
+
