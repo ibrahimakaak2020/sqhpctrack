@@ -79,6 +79,7 @@
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ active_maintenance.id }}">
                                     <i class="bi bi-arrow-clockwise me-1"></i> Update
                                 </button>
+                                {% include 'equipment/addstatusmodal.html' %}
                                 <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal-{{ active_maintenance.id }}">
                                     <i class="bi bi-list-check me-1"></i> History
                                 </button>
@@ -199,12 +200,12 @@
 </div>
 
 <!-- Modals -->
-{% include 'equipment/addstatusmodal.html' %}
+
 
 {% for maintenance in equipment.maintenance_records %}
 <!-- Status History Modal -->
 <div class="modal fade" id="statusModal-{{ maintenance.id }}" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-md">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title">
@@ -215,15 +216,28 @@
             <div class="modal-body">
                 <ul class="timeline">
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
-                    <li class="event mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="me-3">
-                                <i class="bi bi-record-circle-fill text-info"></i>
-                            </div>
-                            <div>
-                                <h6 class="mb-0">{{ status.status }}</h6>
-                                <small class="text-muted">{{ status.status_date.strftime('%B %d, %Y %I:%M %p') }}</small>
-                                <p class="mb-0 mt-1" title="{{ status.notes }}">{{ status.notes|truncate(100) }}</p>
+                    <li class="event mb-4 status-{{ status.status }}">
+                        <div class="d-flex">
+                            <div class="flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h6 class="mb-0 text-capitalize">{{ status.status }}</h6>
+                                    <small class="text-muted">{{ status.status_date.strftime('%B %d, %Y %I:%M %p') }}</small>
+                                </div>
+                                <p class="mb-0 mt-2" title="{{ status.notes }}">
+                                    {{ status.notes|truncate(100) }}
+                                </p>
+                                {% if status.is_external %}
+                                <small class="text-muted mt-1 d-block">
+                                    <i class="bi bi-building"></i> External: {{ status.company.companyname_en if status.company else 'N/A' }}
+                                </small>
+                                {% else %}
+                                <small class="text-muted mt-1 d-block">
+                                    <i class="bi bi-tools"></i> Workshop: {{ status.workshop.workshopnames if status.workshop else 'N/A' }}
+                                </small>
+                                {% endif %}
+                                <small class="text-muted mt-1 d-block">
+                                    <i class="bi bi-tools"></i> Registered By: {{ get_user_name(status.registered_by) or status.registered_by }}
+                                </small>
                             </div>
                         </div>
                     </li>

@@ -119,29 +119,41 @@ class MaintenanceRecord(db.Model):
         else:
             print(f"No status updates found for MaintenanceRecord {self.id}")
             return None
+
 class MaintenanceStatus(db.Model):
-    __tablename__ = "maintenance_status"
+    __tablename__ = 'maintenance_status'
 
     id = db.Column(db.Integer, primary_key=True)
     maintenance_id = db.Column(db.Integer, db.ForeignKey('maintenance_record.id'), nullable=False)
-    workshop_id = db.Column(db.Integer, db.ForeignKey('workshop.id'))
     company_id = db.Column(db.Integer, db.ForeignKey('companyuser.cid'))
+    workshop_id = db.Column(db.Integer, db.ForeignKey('workshop.id'))
     status_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
     status = db.Column(db.String(20), nullable=False)
-    is_external = db.Column(db.Boolean, nullable=False)
+    is_external = db.Column(db.Boolean, nullable=False, default=False)
     notes = db.Column(db.Text)
-    register_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
+    registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
 
     # Relationships
-    #maintenance = db.relationship('MaintenanceRecord', backref=db.backref('status_updates', lazy=True))
-    maintenance = db.relationship('MaintenanceRecord', backref=db.backref('status_updates', lazy=True))
-    workshop = db.relationship('Workshop', backref=db.backref('status_updates', lazy=True))
-    company = db.relationship('CompanyUser', backref=db.backref('status_updates', lazy=True))
-    registered_by = db.relationship('User', backref=db.backref('registered_status_updates', lazy=True))
+    maintenance_record = db.relationship(
+        'MaintenanceRecord',
+        backref=db.backref('status_updates', lazy='dynamic', cascade='all, delete-orphan')
+    )
+    workshop = db.relationship(
+        'Workshop',
+        backref=db.backref('status_updates', lazy='dynamic')
+    )
+    company = db.relationship(
+        'CompanyUser',
+        backref=db.backref('status_updates', lazy='dynamic')
+    )
+    user = db.relationship(
+        'User',
+        backref=db.backref('registered_status_updates', lazy='dynamic')
+    )
 
     def __repr__(self):
         return f'<MaintenanceStatus {self.id} ({self.status})>'
-    # In MaintenanceStatus model
+
     def set_maintenance_inactive(self):
         if self.status.lower() == "completed":
             maintenance_record = MaintenanceRecord.query.get(self.maintenance_id)

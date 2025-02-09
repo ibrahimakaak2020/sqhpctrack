@@ -191,29 +191,42 @@ def update_status(id):
     formstatus = MaintenanceStatusForm()
     
     if formstatus.validate_on_submit():
-        status_update = MaintenanceStatus(
-            maintenance_id=id,
-            status=formstatus.status.data,
-            notes=formstatus.notes.data,
-            is_external=formstatus.is_external.data,
-            registered_by=current_user.staffno
-        )
-        
-        # Update the main record
-        if formstatus.is_external.data:
-            record.company_id = formstatus.company_id.data
-        else:
-            record.workshop_id = formstatus.workshop_id.data
-        if request.formstatus.status.data == 'closed':
-            record.isactive = False
-        
-        db.session.add(status_update)
-        db.session.commit()
-        
-        flash('Maintenance status updated successfully', 'success')
+        try:
+            # Create new status update
+            status_update = MaintenanceStatus(
+                maintenance_id=record.id,
+                status=formstatus.status.data,
+                notes=formstatus.notes.data,
+                is_external=formstatus.is_external.data,
+                registered_by=current_user.staffno
+            )
+            
+            # Update the main record relationships
+            if formstatus.is_external.data:
+                company = CompanyUser.query.get(1)
+                if company:
+                    record.company_id = company.cid
+            else:
+                workshop = Workshop.query.get(1)
+                if workshop:
+                    record.workshop_id = workshop.id
+                    
+            if formstatus.status.data == 'closed':
+                record.isactive = False
+            
+            # Save changes
+            db.session.add(status_update)
+            db.session.commit()
+            
+            flash('Status updated successfully', 'success')
+            
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating status: {str(e)}', 'danger')
+            
         return redirect(url_for('equipment.read', sn=record.equipment_sn))
-    
-    flash('Error updating status', 'error')
+        
+    flash('Invalid form submission', 'danger')
     return redirect(url_for('equipment.read', sn=record.equipment_sn))
 
 @equipment_bp.route('/new/<string:sn>', methods=['GET', 'POST'])
@@ -322,4 +335,3 @@ def active_records():
         MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)
-
