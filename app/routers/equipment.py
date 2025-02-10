@@ -244,25 +244,19 @@ def new_maintenance(sn):
                 problem_description=request.form.get('problem_description')
                 
             )
-          
-            
-           
+
             # Save the maintenance record
             db.session.add(record)
+          
             db.session.commit()
-           
-            db.session.commit()
-
-            
-
-            
+        
             # Create initial status
-            initial_status = MaintenanceStatus(maintenance_id=record.id,status='pending',notes='Maintenance request registered',updated_by=current_user.staffno)
+            initial_status = MaintenanceStatus(maintenance_id=record.id,status='pending',notes='Maintenance request registered',registered_by=current_user.staffno)
             db.session.add(initial_status)
             
             db.session.commit()
             flash('New maintenance record created successfully', 'success')
-            return redirect(url_for('main.dashboard', record_id=record.id))
+            return redirect(url_for('equipment.read', sn=sn))
             
         except Exception as e:
             db.session.rollback()
@@ -310,28 +304,11 @@ def get_status_history(record_id):
         'updated_by': status.user.staffname
     } for status in status_updates])
 
-# Equipment List Route
-@equipment_bp.route('/equipment/<string:sn>')
-@login_required
-def view_equipment(sn):
-    equipment = Equipment.query.all()
-    # Get all active maintenance records for each equipment
-    maintenance_records = {}
-    for eq in equipment:
-        maintenance_records[eq.sn] = MaintenanceRecord.query.filter_by(equipment_sn=eq.sn)\
-            .filter(MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress']))\
-            .order_by(MaintenanceRecord.maintenance_date.desc())\
-            .all()
-    
-    return render_template('maintenance/equipment_list.html', 
-                         equipment=equipment,
-                         maintenance_records=maintenance_records)
-
 # Active Maintenance Records
 @equipment_bp.route('/active')
 @login_required
 def active_records():
     active_maintenance = MaintenanceRecord.query.filter(
-        MaintenanceRecord.current_status.in_(['pending', 'received', 'diagnosed', 'in_progress'])
+        MaintenanceRecord.current_status.in_(['pending', 'received', 'in_progress','completed','sending'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)

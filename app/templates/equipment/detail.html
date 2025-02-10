@@ -90,7 +90,7 @@
                             <i class="bi bi-exclamation-circle-fill me-2"></i> No active maintenance records found.
                         </div>
                         <div class="mt-3">
-                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
+                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
                                 <i class="bi bi-plus-circle me-2"></i> Register Maintenance
                             </button>
                             {% include 'equipment/maintenancemodal.html' %}
@@ -141,7 +141,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for maintenance in equipment.maintenance_records|sort(attribute='created_at', reverse=true) %}
+                                    {% for maintenance in equipment.maintenance_records|sort(attribute='maintenance_date', reverse=true) %}
                                    
                                     <tr class="maintenance-record {% if maintenance.isactive %}active-record{% else %}closed-record{% endif %}">
                                         <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
@@ -187,8 +187,8 @@
                         <div class="alert alert-info d-flex align-items-center">
                             <i class="bi bi-info-circle-fill me-2"></i> No maintenance records found.
                         </div>
-                        <div class="mt-3 text-center">
-                            <button type="button" class="btn btn-primary btn-lg w-100" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
+                        <div class="mt-3 text-center w-50">
+                            <button type="button" class="btn btn-primary btn-sm w-50" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
                                 <i class="bi bi-plus-circle me-2"></i> Register Maintenance
                             </button>
                         </div>
