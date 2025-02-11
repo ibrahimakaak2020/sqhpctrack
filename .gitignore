@@ -1,8 +1,8 @@
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+*.pyc
 
 # C extensions
 *.so
@@ -85,3 +85,13 @@ ENV/
 env.bak/
 venv.bak/
 .vercel
+
+# pytest
+.pytest_cache/
+
+# Build directories
+dist/
+build/
+
+# Egg info
+*.egg-info/
