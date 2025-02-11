@@ -2,6 +2,7 @@ from datetime import timedelta
 from flask import Flask, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
+from flask_wtf.csrf import CSRFError
 from flask_session import Session
 from app.config.config import config_dict
 import os
@@ -45,6 +46,11 @@ def create_app(config_name='default'):
 
     # Initialize CSRF protection
     csrf.init_app(app)
+
+    # Add CSRF error handler
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        return render_template('errors/csrf_error.html', reason=e.description), 400
 
     with app.app_context():
         # Import models to ensure tables are created
