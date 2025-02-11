@@ -17,7 +17,7 @@ def create_app(config_name='default'):
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=20)
 
     # Load configuration
-    app.config.from_object(config_dict[config_name])
+    app.config.from_object(config_dict['production'])
 
     # Initialize the session
     Session(app)
@@ -46,9 +46,8 @@ def create_app(config_name='default'):
 
     # Initialize CSRF protection
     csrf.init_app(app)
-    csrf.init_app(app)
-    csrf.exempt(app) # Exempt your API blueprint from CSRF protection
-    # Add CSRF error handler
+    
+    # CSRF error handler
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
         return render_template('errors/csrf_error.html', reason=e.description), 400
@@ -61,6 +60,10 @@ def create_app(config_name='default'):
         from .routers.company_routes import company_bp as company_blueprint
         from .routers.workshop_routes import workshop_bp as workshop_blueprint
         from .routers.equipment import equipment_bp as equipment_blueprint
+        
+        # Exempt routes using csrf.exempt decorator
+        csrf.exempt(main_router)
+        
         app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
         app.register_blueprint(main_router)
         app.register_blueprint(user_blueprint, url_prefix='/users')

@@ -1,5 +1,5 @@
 from app import create_app
-from app.config import ProductionConfig
+from app.config.config import ProductionConfig
 import os
 
 app = create_app(ProductionConfig)

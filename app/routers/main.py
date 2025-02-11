@@ -2,7 +2,15 @@ from flask import Blueprint, render_template,redirect,url_for
 from flask_login import login_required, current_user
 from app.db.database import db
 from app.models import Equipment, MaintenanceRecord, MaintenanceStatus, User
+from app import csrf
+
 main_bp = Blueprint('main', __name__)
+
+@main_bp.route('/api/endpoint', methods=['POST'])
+@csrf.exempt
+def api_endpoint():
+    # Your API logic here
+    pass
 
 @main_bp.route('/')
 def index():
@@ -32,4 +40,4 @@ def dashboard():
         'closed_maintenance_count':0
         # Add more statistics as needed
     }
-    return render_template('main/dashboard.html', stats=stats, notification_count=notification_count) 
+    return render_template('main/dashboard.html', stats=stats, notification_count=notification_count)
