@@ -8,6 +8,8 @@ import os
 
 from app.db.database import db, init_db, login_manager
 
+csrf = CSRFProtect()
+
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config['SESSION_TYPE'] = 'filesystem'
@@ -41,7 +43,8 @@ def create_app(config_name='default'):
     login_manager.login_view = 'users.login'
     login_manager.login_message_category = 'info'
 
-    csrf = CSRFProtect(app)
+    # Initialize CSRF protection
+    csrf.init_app(app)
 
     with app.app_context():
         # Import models to ensure tables are created
