@@ -5,8 +5,7 @@
       "src": "app/__init__.py",
       "use": "@vercel/python",
       "config": {
-        "maxLambdaSize": "15mb",
-        "runtime": "python3.9"
+        "maxLambdaSize": "15mb"
       }
     }
   ],
@@ -23,6 +22,5 @@
   "env": {
     "FLASK_ENV": "production",
     "FLASK_APP": "app/__init__.py"
-  },
-  "regions": ["sin1"]
+  }
 }
