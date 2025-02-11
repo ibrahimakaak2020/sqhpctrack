@@ -24,11 +24,5 @@
     "FLASK_ENV": "production",
     "FLASK_APP": "app/__init__.py"
   },
-  "regions": ["sin1"],
-  "functions": {
-    "app/__init__.py": {
-      "memory": 1024,
-      "maxDuration": 10
-    }
-  }
+  "regions": ["sin1"]
 }
