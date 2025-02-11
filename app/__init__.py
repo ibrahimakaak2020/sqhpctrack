@@ -4,24 +4,27 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_session import Session
 from app.config.config import config_dict
+import os
 
-from  app.db.database import db,init_db,login_manager
+from app.db.database import db, init_db, login_manager
 
 def create_app(config_name='default'):
     app = Flask(__name__)
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=20)
 
-# Initialize the session
+    # Load configuration
+    app.config.from_object(config_dict[config_name])
+
+    # Initialize the session
     Session(app)
 
     @app.before_request
     def make_session_permanent():
         session.permanent = True
-  
+
     @app.errorhandler(404)
     def not_found_error(error):
-     
         return render_template('errors/404.html'), 404
 
     @app.errorhandler(500)
@@ -30,21 +33,20 @@ def create_app(config_name='default'):
 
     @app.errorhandler(403)
     def forbidden_error(error):
-    
-        return render_template('errors/403.html'), 403 
-    # Load configuration
-    app.config.from_object(config_dict[config_name])
-    
+        return render_template('errors/403.html'), 403
+
+    # Initialize extensions
     init_db(app=app)
-    login_manager.login_view = 'users.login'  # Specify the login route
+    login_manager.init_app(app)
+    login_manager.login_view = 'users.login'
     login_manager.login_message_category = 'info'
-    
+
     csrf = CSRFProtect(app)
-    
+
     with app.app_context():
         # Import models to ensure tables are created
         from .models import User, CompanyUser, Workshop, Equipment, MaintenanceRecord, MaintenanceStatus
-        from .routers.main   import main_bp as main_router
+        from .routers.main import main_bp as main_router
         from .routers.user_routes import users_bp as user_blueprint
         from .routers.company_routes import company_bp as company_blueprint
         from .routers.workshop_routes import workshop_bp as workshop_blueprint
@@ -58,6 +60,11 @@ def create_app(config_name='default'):
         db.create_all()
 
     return app
+
+app = create_app()
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
 
 @login_manager.user_loader
 def load_user(user_id):
