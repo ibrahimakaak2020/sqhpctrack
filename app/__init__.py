@@ -46,7 +46,8 @@ def create_app(config_name='default'):
 
     # Initialize CSRF protection
     csrf.init_app(app)
-
+    csrf.init_app(app)
+    csrf.exempt(app) # Exempt your API blueprint from CSRF protection
     # Add CSRF error handler
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
