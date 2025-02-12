@@ -4,6 +4,9 @@ from wtforms.validators import DataRequired, Length, EqualTo, ValidationError
 from app.models import User
 
 class LoginForm(FlaskForm):
+    class Meta:
+        csrf = True  # Enable CSRF protection
+        
     staffno = IntegerField('Staff Number', validators=[DataRequired()])
     password = PasswordField('Password', validators=[DataRequired()])
     remember_me = BooleanField('Remember Me')

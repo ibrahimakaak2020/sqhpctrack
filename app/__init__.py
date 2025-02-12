@@ -4,7 +4,6 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
 from flask_session import Session
-from app.config.config import config_dict
 import os
 
 from app.db.database import db, init_db, login_manager
@@ -14,44 +13,35 @@ csrf = CSRFProtect()
 def create_app(config_name='default'):
     app = Flask(__name__)
     
+    # Database Configuration
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    app.config['SQLALCHEMY_ECHO'] = True  # Set to False in production
+    
     # Security configurations
-    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
-    app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('WTF_CSRF_SECRET_KEY', 'your-csrf-secret-key-here')
-    app.config['WTF_CSRF_TIME_LIMIT'] = 3600
-    app.config['WTF_CSRF_SSL_STRICT'] = False  # Important for Vercel deployment
-    
-    # Add CSRF trusted origins
-    app.config['WTF_CSRF_TRUSTED_ORIGINS'] = [
-        'https://*.vercel.app',  # For Vercel deployments
-        'http://localhost:5000',  # For local development
-        'http://127.0.0.1:5000',
-        'http://172.17.25.165:5000',  # For local development
-    ]
-    
-    # Add your domain when deployed
-    if os.environ.get('DOMAIN'):
-        app.config['WTF_CSRF_TRUSTED_ORIGINS'].append(
-            f"https://{os.environ.get('DOMAIN')}"
-        )
+    app.config.update(
+        SECRET_KEY=os.environ.get('SECRET_KEY', 'dev-key-please-change'),
+        WTF_CSRF_ENABLED=True,
+        WTF_CSRF_SECRET_KEY=os.environ.get('WTF_CSRF_SECRET_KEY', 'csrf-key-please-change'),
+        WTF_CSRF_TIME_LIMIT=3600,
+        WTF_CSRF_SSL_STRICT=False,
+        SESSION_COOKIE_SECURE=False,  # Set to True in production
+        SESSION_COOKIE_HTTPONLY=True,
+        SESSION_COOKIE_SAMESITE='Lax',
+        SESSION_COOKIE_DOMAIN=None,
+        PERMANENT_SESSION_LIFETIME=timedelta(minutes=60)
+    )
     
     # Session configurations
     app.config['SESSION_TYPE'] = 'filesystem'
     app.config['SESSION_PERMANENT'] = True
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=20)
-    app.config['SESSION_COOKIE_SECURE'] = True
-    app.config['SESSION_COOKIE_HTTPONLY'] = True
-    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
-    # Load configuration
-    app.config.from_object(config_dict['production'])
-
-    # Initialize the session
+    # Initialize extensions
     Session(app)
-
-    # Initialize CSRF protection before other extensions
     csrf.init_app(app)
-
-   
+    init_db(app=app)
+    login_manager.init_app(app)
+    
     @app.errorhandler(404)
     def not_found_error(error):
         return render_template('errors/404.html'), 404
@@ -65,7 +55,7 @@ def create_app(config_name='default'):
         return render_template('errors/403.html'), 403
 
     # Initialize extensions
-    init_db(app=app)
+   
     login_manager.init_app(app)
     login_manager.login_view = 'users.login'
     login_manager.login_message_category = 'info'
@@ -103,8 +93,7 @@ def create_app(config_name='default'):
 
 app = create_app()
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.getenv('PORT', 5000)))
+
 
 @login_manager.user_loader
 def load_user(user_id):

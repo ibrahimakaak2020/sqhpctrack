@@ -1,28 +1,52 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from flask_login import login_user, logout_user, login_required, current_user
+
 from app.models import User
 from app.forms.user_forms import LoginForm, RegistrationForm, UserUpdateForm
 from app import db
 from app.utils.decorators import admin_required
+import logging
 
+logger = logging.getLogger(__name__)
 users_bp = Blueprint('users', __name__)
 
 @users_bp.route('/login', methods=['GET', 'POST'])
+
 def login():
     if current_user.is_authenticated:
         return redirect(url_for('main.index'))
     
     form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(staffno=form.staffno.data).first()
-        if user and user.check_password(form.password.data):
-            login_user(user, remember=form.remember_me.data)
-            next_page = request.args.get('next')
-            if next_page:
-                return redirect(next_page)
+    if request.method == 'POST':
+        try:
+            # Print form data for debugging
+            logger.debug(f"Form Data: {request.form}")
+            logger.debug(f"CSRF Token: {request.form.get('csrf_token')}")
+            
+            if form.validate_on_submit():
+                user = User.query.filter_by(staffno=form.staffno.data).first()
+                if user and user.check_password(form.password.data):
+                    session.permanent = True
+                    login_user(user, remember=form.remember_me.data)
+                    logger.info(f'User {user.staffno} logged in successfully')
+                    
+                    next_page = request.args.get('next')
+                    if next_page:
+                        return redirect(next_page)
+                    return redirect(url_for('main.index'))
+                
+                logger.warning(f'Failed login attempt for staff number: {form.staffno.data}')
+                flash('Invalid staff number or password', 'danger')
             else:
-                return redirect(url_for('main.index'))
-        flash('Invalid staff number or password', 'danger')
+                logger.error(f'Form validation errors: {form.errors}')
+                for field, errors in form.errors.items():
+                    for error in errors:
+                        flash(f'{getattr(form, field).label.text}: {error}', 'danger')
+                
+        except Exception as e:
+            logger.error(f'Login error: {str(e)}')
+            flash('An error occurred during login. Please try again.', 'danger')
+    
     return render_template('users/login.html', form=form)
 
 @users_bp.route('/logout')

@@ -13,6 +13,7 @@
                 <div class="card-body">
                     <form method="POST" action="{{ url_for('users.login') }}">
                         {{ form.hidden_tag() }}
+                         {{ form.csrf_token }}
                      
                         <div class="mb-3">
                             {{ form.staffno.label(class="form-label") }}
