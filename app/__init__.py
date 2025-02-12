@@ -6,6 +6,7 @@ from flask_wtf.csrf import CSRFError
 from flask_session import Session
 import os
 
+from app.config.config import Config
 from app.db.database import db, init_db, login_manager
 
 csrf = CSRFProtect()
@@ -14,7 +15,7 @@ def create_app(config_name='default'):
     app = Flask(__name__)
     
     # Database Configuration
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///app.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     app.config['SQLALCHEMY_ECHO'] = True  # Set to False in production
     
