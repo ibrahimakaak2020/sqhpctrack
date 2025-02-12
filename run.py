@@ -5,7 +5,7 @@ from datetime import timedelta
 
 class CustomProductionConfig(ProductionConfig):
     # Basic Flask settings
-    DEBUG = True
+    DEBUG = False
     TESTING = False
     
     # Security settings
@@ -28,6 +28,7 @@ class CustomProductionConfig(ProductionConfig):
             "http://localhost:5000",
             "http://127.0.0.1:5000",
             "https://*.vercel.app",
+            "https://sqhpctrack.vercel.app/users/register",
             "*"  # Remove in production
         ]
     }
