@@ -1,5 +1,5 @@
 from datetime import timedelta
-from flask import Flask, render_template, session
+from flask import Flask, render_template, session, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import CSRFProtect
 from flask_wtf.csrf import CSRFError
@@ -13,8 +13,34 @@ csrf = CSRFProtect()
 
 def create_app(config_name='default'):
     app = Flask(__name__)
+    
+    # Security configurations
+    app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+    app.config['WTF_CSRF_SECRET_KEY'] = os.environ.get('WTF_CSRF_SECRET_KEY', 'your-csrf-secret-key-here')
+    app.config['WTF_CSRF_TIME_LIMIT'] = 3600
+    app.config['WTF_CSRF_SSL_STRICT'] = False  # Important for Vercel deployment
+    
+    # Add CSRF trusted origins
+    app.config['WTF_CSRF_TRUSTED_ORIGINS'] = [
+        'https://*.vercel.app',  # For Vercel deployments
+        'http://localhost:5000',  # For local development
+        'http://127.0.0.1:5000',
+        'http://172.17.25.165:5000',  # For local development
+    ]
+    
+    # Add your domain when deployed
+    if os.environ.get('DOMAIN'):
+        app.config['WTF_CSRF_TRUSTED_ORIGINS'].append(
+            f"https://{os.environ.get('DOMAIN')}"
+        )
+    
+    # Session configurations
     app.config['SESSION_TYPE'] = 'filesystem'
+    app.config['SESSION_PERMANENT'] = True
     app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(minutes=20)
+    app.config['SESSION_COOKIE_SECURE'] = True
+    app.config['SESSION_COOKIE_HTTPONLY'] = True
+    app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 
     # Load configuration
     app.config.from_object(config_dict['production'])
@@ -22,10 +48,10 @@ def create_app(config_name='default'):
     # Initialize the session
     Session(app)
 
-    @app.before_request
-    def make_session_permanent():
-        session.permanent = True
+    # Initialize CSRF protection before other extensions
+    csrf.init_app(app)
 
+   
     @app.errorhandler(404)
     def not_found_error(error):
         return render_template('errors/404.html'), 404
@@ -44,9 +70,6 @@ def create_app(config_name='default'):
     login_manager.login_view = 'users.login'
     login_manager.login_message_category = 'info'
 
-    # Initialize CSRF protection
-    csrf.init_app(app)
-    
     # CSRF error handler
     @app.errorhandler(CSRFError)
     def handle_csrf_error(e):
@@ -62,13 +85,17 @@ def create_app(config_name='default'):
         from .routers.equipment import equipment_bp as equipment_blueprint
         
         # Exempt routes using csrf.exempt decorator
-        csrf.exempt(main_router)
+      
         
+        # Register blueprints
         app.register_blueprint(equipment_blueprint, url_prefix='/equipment')
         app.register_blueprint(main_router)
         app.register_blueprint(user_blueprint, url_prefix='/users')
         app.register_blueprint(company_blueprint, url_prefix='/companies')
         app.register_blueprint(workshop_blueprint, url_prefix='/workshops')
+   
+     
+     
         # Create all tables
         db.create_all()
 
