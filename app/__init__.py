@@ -6,7 +6,7 @@ from flask_wtf.csrf import CSRFError
 from flask_session import Session
 import os
 
-from app.config.config import Config
+from app.config.config import Config, ProductionConfig
 from app.db.database import db, init_db, login_manager
 
 csrf = CSRFProtect()
@@ -26,6 +26,7 @@ def create_app(config_name='default'):
         WTF_CSRF_SECRET_KEY=os.environ.get('WTF_CSRF_SECRET_KEY', 'csrf-key-please-change'),
         WTF_CSRF_TIME_LIMIT=3600,
         WTF_CSRF_SSL_STRICT=False,
+        WTF_CSRF_CHECK_DEFAULT=True,
         SESSION_COOKIE_SECURE=False,  # Set to True in production
         SESSION_COOKIE_HTTPONLY=True,
         SESSION_COOKIE_SAMESITE='Lax',
@@ -92,7 +93,78 @@ def create_app(config_name='default'):
 
     return app
 
-app = create_app()
+class CustomProductionConfig(ProductionConfig):
+    # Basic Flask settings
+    DEBUG = False
+    TESTING = False
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'your-secret-key-here')
+    
+    # Security settings
+    TALISMAN_ENABLED = False
+    HTTP_HEADERS = {
+        "X-Frame-Options": "ALLOWALL",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, X-CSRF-Token"
+    }
+    
+    # CORS settings
+    ENABLE_CORS = True
+    CORS_OPTIONS = {
+        "supports_credentials": True,
+        "allow_headers": ["Content-Type", "X-CSRF-Token"],
+        "expose_headers": ["Content-Type", "X-CSRF-Token"],
+        "resources": r"/*",
+        "origins": [
+            "http://localhost:5000",
+            "http://127.0.0.1:5000",
+            "https://*.vercel.app",
+            "https://sqhpctrack.vercel.app",
+            "*"  # Remove in production
+        ]
+    }
+    
+    # CSRF settings
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_SECRET_KEY = os.environ.get('WTF_CSRF_SECRET_KEY', 'your-csrf-secret-key')
+    WTF_CSRF_CHECK_DEFAULT = True
+    WTF_CSRF_SSL_STRICT = False
+    WTF_CSRF_TIME_LIMIT = 3600
+    WTF_CSRF_TRUSTED_ORIGINS = [
+        'http://localhost:5000',
+        'http://127.0.0.1:5000',
+        'https://*.vercel.app',
+        'https://sqhpctrack.vercel.app'
+    ]
+    
+    # Proxy settings
+    ENABLE_PROXY_FIX = True
+    PROXY_FIX_CONFIG = {
+        "x_for": 1,
+        "x_proto": 1,
+        "x_host": 1,
+        "x_port": 1,
+        "x_prefix": 1
+    }
+    
+    # Session settings
+    SESSION_TYPE = 'filesystem'
+    SESSION_PERMANENT = True
+    PERMANENT_SESSION_LIFETIME = timedelta(days=1)
+    SESSION_COOKIE_SECURE = False  # Set to True in production
+    SESSION_COOKIE_HTTPONLY = True
+    SESSION_COOKIE_SAMESITE = 'Lax'
+    SESSION_COOKIE_NAME = 'session'
+    SESSION_COOKIE_DOMAIN = None
+
+    # Cache settings
+    CACHE_CONFIG = {
+        'CACHE_TYPE': 'simple',
+        'CACHE_DEFAULT_TIMEOUT': 300
+    }
+    DATA_CACHE_CONFIG = CACHE_CONFIG
+
+app = create_app(CustomProductionConfig)
 
 
 

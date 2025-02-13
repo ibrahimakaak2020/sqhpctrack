@@ -54,52 +54,51 @@
         <!-- Active Maintenance Record -->
         <div class="row">
             <div class="col-md-12">
-                <div class="card p-4 mb-4 border rounded shadow-sm" style="background-color: var(--light-color);">
-                    <h5 class="border-bottom pb-2 mb-3 d-flex align-items-center">
-                        <i class="bi bi-tools me-2"></i> Active Maintenance Record
-                    </h5>
-                    <div style="max-height: 300px; overflow-y: auto;">
-                        {% set active_maintenance = equipment.get_active_maintenance() %}
-                        {% if active_maintenance %}
-                        <div class="mb-3 p-3 border rounded shadow-sm" style="background-color: var(--warning-color);">
-                            <h6 class="mb-2 text-primary"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ active_maintenance.problem_description }}</h6>
-                            <p class="mb-1"><strong>Status:</strong> 
-                                <span class="badge bg-success ms-2">{{ active_maintenance.isactive }}</span>
-                            </p>
-                            <p class="mb-1"><strong>Registered By:</strong> 
-                                <span class="text-muted">{{ get_user_name(active_maintenance.registered_by) or active_maintenance.registered_by }}</span>
-                            </p>
-                            <p class="mb-1"><strong>Status Update:</strong> 
-                                <span class="text-muted">{{ active_maintenance.latest_status }}</span>
-                            </p>
-                            <p class="mb-1"><strong>Date:</strong> 
-                                <span class="text-muted">{{ active_maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span>
-                            </p>
-                            <div class="btn-group mt-3">
-                                <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ active_maintenance.id }}">
-                                    <i class="bi bi-arrow-clockwise me-1"></i> Update
-                                </button>
-                                {% include 'equipment/addstatusmodal.html' %}
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#statusModal-{{ active_maintenance.id }}">
-                                    <i class="bi bi-list-check me-1"></i> History
-                                </button>
-                            </div>
-                        </div>
-                        {% else %}
-                        <div class="alert alert-warning d-flex align-items-center">
-                            <i class="bi bi-exclamation-circle-fill me-2"></i> No active maintenance records found.
-                        </div>
-                        <div class="mt-3">
-                            <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
-                                <i class="bi bi-plus-circle me-2"></i> Register Maintenance
-                            </button>
-                            {% include 'equipment/maintenancemodal.html' %}
-                        </div>
-                        {% endif %}
-                    </div>
+              <div class="card shadow-sm border-0 rounded-3 p-4 mb-4" style="background-color: var(--light-color);">
+                <h5 class="border-bottom pb-2 mb-3 d-flex align-items-center">
+                  <i class="bi bi-tools me-2"></i> Active Maintenance Record
+                </h5>
+                <div class="overflow-auto" style="max-height: 300px;">
+                  {% set active_maintenance = equipment.get_active_maintenance() %}
+                  {% if active_maintenance %}
+                  <div class="mb-3 p-3 border rounded shadow-sm" style="background-color: var(--warning-color);">
+                    <h6 class="mb-2 text-primary"><i class="bi bi-exclamation-triangle-fill me-2"></i>{{ active_maintenance.problem_description }}</h6>
+                    <p class="mb-1"><strong>Status:</strong> 
+                      <span class="badge bg-success ms-2">{{ active_maintenance.isactive }}</span>
+                    </p>
+                    <p class="mb-1"><strong>Registered By:</strong> 
+                      <span class="text-muted">{{ get_user_name(active_maintenance.registered_by) or active_maintenance.registered_by }}</span>
+                    </p>
+                    <p class="mb-1"><strong>Status Update:</strong> 
+                      <span class="text-muted">{{ active_maintenance.latest_status }}</span>
+                    </p>
+                    <p class="mb-1"><strong>Date:</strong> 
+                      <span class="text-muted">{{ active_maintenance.maintenance_date.strftime('%Y-%m-%d') }}</span>
+                    </p>
+                    <div class="btn-group mt-3">
+                        <button class="btn btn-sm btn-success me-2" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ active_maintenance.id }}">
+                          <i class="bi bi-arrow-clockwise me-1"></i> Update
+                        </button>
+                        <button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#statusModal-{{ active_maintenance.id }}">
+                          <i class="bi bi-list-check me-1"></i> History
+                        </button>
+                      </div>
+                  </div>
+                  {% else %}
+                  <div class="alert alert-warning d-flex align-items-center">
+                    <i class="bi bi-exclamation-circle-fill me-2"></i> No active maintenance records found.
+                  </div>
+                  <div class="mt-3">
+                    <button type="button" class="btn btn-primary btn-md" data-bs-toggle="modal" data-bs-target="#maintenanceModal" data-sn="{{ equipment.sn }}">
+                      <i class="bi bi-plus-circle me-2"></i> Register Maintenance
+                    </button>
+                    {% include 'equipment/maintenancemodal.html' %}
+                  </div>
+                  {% endif %}
                 </div>
+              </div>
             </div>
-        </div>
+          </div>
     </div>
 
 <!-- Maintenance History Card -->
@@ -292,6 +291,15 @@
         downloadLink.href = URL.createObjectURL(csvFile);
         downloadLink.click();
     }
+    document.getElementById('is_external').addEventListener('change', function() {
+        if (this.checked) {
+            document.getElementById('external-status').style.display = 'block';
+            document.getElementById('internal-status').style.display = 'none';
+        } else {
+            document.getElementById('external-status').style.display = 'none';
+            document.getElementById('internal-status').style.display = 'block';
+        }
+    });
 </script>
 
 {% endblock %}

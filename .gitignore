@@ -86,6 +86,8 @@ env.bak/
 venv.bak/
 .vercel
 
+*.pyc
+flask_session/
 # pytest
 .pytest_cache/
 
