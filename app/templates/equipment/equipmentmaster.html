@@ -19,12 +19,27 @@
                         <input type="text" class="form-control" id="searchInput" placeholder="Search equipment...">
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-2">
                     <select class="form-select" id="typeFilter">
                         <option value="">All Types</option>
                         <option value="CPU">CPU</option>
                         <option value="Monitor">Monitor</option>
                         <option value="Printer">Printer</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" id="activeFilter">
+                        <option value="">All Status</option>
+                        <option value="true">Active</option>
+                        <option value="false">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <select class="form-select" id="buildingFilter">
+                        <option value="">All Buildings</option>
+                        {% for workshop in workshops %}
+                        <option value="{{ workshop.id }}">{{ workshop.building }}</option>
+                        {% endfor %}
                     </select>
                 </div>
             </div>
@@ -94,6 +109,7 @@
             </div>
         </div>
     </div>
+    
 
     <!-- Include Modal Templates -->
     {% include 'equipment/equipment_modal.html' %}
@@ -104,23 +120,39 @@
 document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('searchInput');
     const typeFilter = document.getElementById('typeFilter');
+    const activeFilter = document.getElementById('activeFilter');
+    const buildingFilter = document.getElementById('buildingFilter');
     const tableRows = document.querySelectorAll('tbody tr');
 
     function filterTable() {
         const searchTerm = searchInput.value.toLowerCase();
         const filterType = typeFilter.value.toLowerCase();
+        const filterActive = activeFilter.value.toLowerCase();
+        const filterBuilding = buildingFilter.value.toLowerCase();
 
         tableRows.forEach(row => {
             const text = row.textContent.toLowerCase();
             const type = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
+            const active = row.querySelector('td:nth-child(6) .badge').textContent.toLowerCase();
+            const building = row.querySelector('td:nth-child(5) small').textContent.trim().split(' ').pop().toLowerCase();
+
             const matchesSearch = text.includes(searchTerm);
             const matchesType = filterType === '' || type.includes(filterType);
-            row.style.display = matchesSearch && matchesType ? '' : 'none';
+            const matchesActive = filterActive === '' || active.includes(filterActive);
+            const matchesBuilding = filterBuilding === '' || building.includes(filterBuilding);
+
+            if (matchesSearch && matchesType && matchesActive && matchesBuilding) {
+                row.style.display = '';
+            } else {
+                row.style.display = 'none';
+            }
         });
     }
 
     searchInput.addEventListener('input', filterTable);
     typeFilter.addEventListener('change', filterTable);
+    activeFilter.addEventListener('change', filterTable);
+    buildingFilter.addEventListener('change', filterTable);
 });
 </script>
 {% endblock %}

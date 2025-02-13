@@ -25,8 +25,9 @@ equipment_bp = Blueprint('equipment', __name__, url_prefix='/equipment')
 @login_required
 def equipment_master():
     form=AddEquipmentForm()
+    workshops=Workshop.query.all()
     equipments = Equipment.query.all()
-    return render_template('equipment/equipmentmaster.html', equipments=equipments, form=form)
+    return render_template('equipment/equipmentmaster.html', equipments=equipments,workshops=workshops, form=form)
 
 @equipment_bp.route('/add', methods=['POST'])
 @login_required
@@ -102,6 +103,7 @@ def delete_equipment(sn):
 @equipment_bp.route('/<string:sn>')
 def read(sn):
     equipment = Equipment.query.get_or_404(sn)
+   
     maintenance= MaintenanceRecord.query.filter_by(equipment_sn=sn).order_by(MaintenanceRecord.maintenance_date.desc()).all()
    
     form=MaintenanceRecordForm()
@@ -109,6 +111,7 @@ def read(sn):
     return render_template('equipment/detail.html',
                          equipment=equipment,maintenance=maintenance,
                          current_datetime=localtime,
+                          
                          current_user=current_user,get_user_name=User.get_user_name,form=form,formstatus=formstatus)
 
 
