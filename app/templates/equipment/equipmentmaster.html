@@ -129,12 +129,16 @@ document.addEventListener('DOMContentLoaded', function() {
         const filterType = typeFilter.value.toLowerCase();
         const filterActive = activeFilter.value.toLowerCase();
         const filterBuilding = buildingFilter.value.toLowerCase();
+        console.log(filterBuilding);
+        console.log('----------------------------------------------------------------');
 
         tableRows.forEach(row => {
             const text = row.textContent.toLowerCase();
             const type = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
             const active = row.querySelector('td:nth-child(6) .badge').textContent.toLowerCase();
-            const building = row.querySelector('td:nth-child(5) small').textContent.trim().split(' ').pop().toLowerCase();
+            const building = row.querySelector('td:nth-child(5) small').textContent.toLowerCase();
+            console.log(building);
+            const matchesStatus = active === 'available'? true : false;
 
             const matchesSearch = text.includes(searchTerm);
             const matchesType = filterType === '' || type.includes(filterType);
