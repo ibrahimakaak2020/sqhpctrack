@@ -206,7 +206,7 @@
 {% for maintenance in equipment.maintenance_records %}
 <!-- Status History Modal -->
 <div class="modal fade" id="statusModal-{{ maintenance.id }}" tabindex="-1">
-    <div class="modal-dialog modal-md">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title">
@@ -214,7 +214,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body modal-dialog-scrollable" style="max-height: 60vh; overflow-y: auto;" >
+            <div class="modal-body modal-dialog-scrollable " style="max-height: 60vh; overflow-y: auto;" >
                 <ul class="timeline">
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
                     <li class="event mb-4 status-{{ status.status }}">
@@ -229,7 +229,14 @@
                                 </p>
                                 {% if status.is_external %}
                                 <small class="text-muted mt-1 d-block">
-                                    <i class="bi bi-building"></i> External : {{ status.company.companyname_en if status.company else 'N/A' }}
+                                    <i class="bi bi-building"></i> External Service:
+                                    {% if status.company %}
+                                        {{ status.company.companyname_en }} •
+                                        {{ status.company.staffname }} •
+                                        <i class="bi bi-telephone"></i> {{ status.company.contactnumber }}
+                                    {% else %}
+                                        N/A
+                                    {% endif %}
                                 </small>
                                 {% else %}
                                 <small class="text-muted mt-1 d-block">
