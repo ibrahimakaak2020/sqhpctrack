@@ -1,5 +1,3 @@
-
-  
 <!-- Modal -->
 <div class="modal fade" id="addStatusModal" tabindex="-1" aria-labelledby="addStatusModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -11,7 +9,7 @@
             <form method="POST" id="statusForm" action="{{ url_for('equipment.update_status', id=active_maintenance.id) }}">
                 {{ formstatus.hidden_tag() }}
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                <div class="modal-body">
+                <div class="modal-body" style="max-height: 70vh; overflow-y: auto;">
                 
 
                     
@@ -21,24 +19,21 @@
                         {{ formstatus.status(class="form-control") }}
                     </div>
 
-                    <div id="external-status" style="display: none;">
+                    <div id="external-status">
                         <div class="mb-3">
                             {{ formstatus.company_id.label }}
                             {{ formstatus.company_id(class="form-control") }}
                         </div>
                     </div>
 
-                    <div id="internal-status" style="display: none;">
+                    <div id="internal-status">
                         <div class="mb-3">
                             {{ formstatus.workshop_id.label }}
                             {{ formstatus.workshop_id(class="form-control") }}
                         </div>
                     </div>
 
-                    <div class="mb-3 form-check">
-                        {{ formstatus.is_external(class="form-check-input") }}
-                        {{ formstatus.is_external.label(class="form-check-label") }}
-                    </div>
+                   
 
                     <div class="mb-3">
                         {{ formstatus.notes.label }}
@@ -50,11 +45,39 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add Status</button>
+                    <button type="submit" class="btn btn-primary">Save changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const statusSelect = document.querySelector('#status');
+    const modalContent = document.querySelector('.modal-content');
+    const externalStatus = document.querySelector('#external-status');
+    const internalStatus = document.querySelector('#internal-status');
+    
+    // Function to handle status change
+    function handleStatusChange() {
+        if (statusSelect.value === 'sended') {
+            modalContent.style.border = '3px solid #ffeb3b';
+            externalStatus.style.display = 'block';
+            internalStatus.style.display = 'none';
+        } else {
+            modalContent.style.border = '';
+            externalStatus.style.display = 'none';
+            internalStatus.style.display = 'block';
+        }
+    }
+
+    // Initial check
+    handleStatusChange();
+
+    // Add event listener
+    statusSelect.addEventListener('change', handleStatusChange);
+});
+</script>
 </div>
 

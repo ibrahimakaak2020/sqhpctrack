@@ -1,5 +1,5 @@
 <div class="modal fade" id="historyModal-{{ maintenance.id }}" tabindex="-1">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable bg-red" style="max-height: 30vh;">
         <div class="modal-content">
             <div class="modal-header bg-info text-white">
                 <h5 class="modal-title">
@@ -7,8 +7,8 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
-                <div class="timeline">
+            <div class="modal-body modal-dialog-scrollable " style="max-height: 20vh; overflow-y: auto;">
+                <div class="timeline" >
                     {% for status in maintenance.statuses|sort(attribute='created_at', reverse=true) %}
                     <div class="timeline-item">
                         <div class="timeline-date">

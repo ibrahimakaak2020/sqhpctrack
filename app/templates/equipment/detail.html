@@ -84,6 +84,7 @@
                         </button>
                       </div>
                   </div>
+                  {% include 'equipment/addstatusmodal.html' %}
                   {% else %}
                   <div class="alert alert-warning d-flex align-items-center">
                     <i class="bi bi-exclamation-circle-fill me-2"></i> No active maintenance records found.
@@ -213,7 +214,7 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body modal-dialog-scrollable" style="max-height: 60vh; overflow-y: auto;" >
                 <ul class="timeline">
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
                     <li class="event mb-4 status-{{ status.status }}">

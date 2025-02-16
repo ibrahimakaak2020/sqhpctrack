@@ -9,15 +9,16 @@ from app.models import CompanyUser, Workshop
 class MaintenanceStatusForm(FlaskForm):
     status = SelectField('Status', validators=[DataRequired()],
                         choices=[
-                            ('received', 'Mark as Received'),
-                            ('sended', 'Mark as Sended'),
-                            ('pending', 'Mark as Pending'),
-                            ('in_progress', 'Start Repair'),
-                            ('completed', 'Mark as Completed'),
-                            ('closed', 'Mark as Closed'),
+                            ('received', 'Receive'),
+                            ('sended', 'Send'),
+                            ('pending', 'Pending'),
+                            ('in_progress', 'Repairing'),
+                            ('completed', 'Completed'),
+                            ('closed', 'Closed'),
                             ('cancelled', 'Cancel Maintenance')
                         ])
-    is_external = BooleanField('External' , default=False)
+    #is_external = BooleanField('External' , default=False)
+    
     notes = TextAreaField('Notes')
     workshop_id = SelectField('Workshop', 
         choices=[], 
@@ -29,7 +30,7 @@ class MaintenanceStatusForm(FlaskForm):
         validators=[DataRequired()])
   
     
-    submit = SubmitField('Add Status')
+    submit = SubmitField('Submit')
 
     def __init__(self, *args, **kwargs):
         super(MaintenanceStatusForm, self).__init__(*args, **kwargs)

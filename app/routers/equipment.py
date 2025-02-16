@@ -200,21 +200,24 @@ def update_status(id):
                 maintenance_id=record.id,
                 status=formstatus.status.data,
                 notes=formstatus.notes.data,
-                is_external=formstatus.is_external.data,
                 registered_by=current_user.staffno
             )
             
             # Update the main record relationships
-            if formstatus.is_external.data:
+            if formstatus.status.data =='sended':
                 company = CompanyUser.query.get(formstatus.company_id.data)
                 if company:
                     status_update.company_id = company.cid
+                    status_update.is_external = True
             else:
                 workshop = Workshop.query.get(formstatus.workshop_id.data)
                 if workshop:
                     status_update.workshop_id = workshop.id
+                    status_update.is_external = False
                     
             if formstatus.status.data == 'closed':
+                record.isactive = False
+            if formstatus.status.data == 'cancelled':
                 record.isactive = False
             
             # Save changes
