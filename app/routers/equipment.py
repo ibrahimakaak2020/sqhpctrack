@@ -121,7 +121,7 @@ def read(sn):
 status_colors = {
     'pending': 'secondary',
     'received': 'info',
-    'diagnosed': 'warning',
+    'send': 'warning',
     'in_progress': 'primary',
     'completed': 'success',
     'cancelled': 'danger'
