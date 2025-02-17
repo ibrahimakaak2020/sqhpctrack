@@ -2,30 +2,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<!-- Add this style section after the extends and before the content -->
-<style>
-    .timeline .event {
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 15px;
-    }
-    .timeline .status-pending {
-        background-color: #fff3cd;
-        border-left: 4px solid #ffc107;
-    }
-    .timeline .status-in_progress {
-        background-color: #cfe2ff;
-        border-left: 4px solid #0d6efd;
-    }
-    .timeline .status-completed {
-        background-color: #d1e7dd;
-        border-left: 4px solid #198754;
-    }
-    .timeline .status-cancelled {
-        background-color: #f8d7da;
-        border-left: 4px solid #dc3545;
-    }
-</style>
+
 
 <!-- Equipment Details Card -->
 <div class="card mx-4 shadow-sm border color-scheme-metallic">
@@ -240,8 +217,9 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body modal-dialog-scrollable " style="max-height: 60vh; overflow-y: auto;" >
-                <ul class="timeline >
+                <ul class="timeline" >
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
+                   
                     <li class="event mb-4 status-{{ status.status|lower }}">
                         <div class="d-flex ">
                             <div class="flex-grow-1">

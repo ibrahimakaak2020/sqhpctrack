@@ -257,7 +257,7 @@ def new_maintenance(sn):
             db.session.commit()
         
             # Create initial status
-            initial_status = MaintenanceStatus(maintenance_id=record.id,status='pending',notes='Maintenance request registered',registered_by=current_user.staffno)
+            initial_status = MaintenanceStatus(maintenance_id=record.id,status='rescheduled',notes='Maintenance request registered',registered_by=current_user.staffno)
             db.session.add(initial_status)
             
             db.session.commit()

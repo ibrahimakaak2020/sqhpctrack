@@ -1,17 +1,20 @@
+
+
+
+/* Improved Color Scheme */
 :root {
-    --primary-color: #27445D;
-    --secondary-color: #497D74;
-    --success-color: #71BBB2;
-    --info-color: #71BBB2; /* Using the same color as success for consistency */
-    --warning-color: #EFE9D5;
-    --danger-color: #dc3545; /* Keeping the original danger color */
-    --light-color: #EFE9D5;
-    --dark-color: #27445D;
-    --white-color: #ffffff;
-    --gray-color: #6c757d;
-    --gray-dark-color: #343a40;
-    --border-color: #dee2e6;
-    --background-color: #f8f9fa;
+    --primary-color: #007bff; /* Blue */
+    --secondary-color: #6c757d; /* Gray */
+    --success-color: #28a745; /* Green */
+    --danger-color: #dc3545; /* Red */
+    --warning-color: #ffc107; /* Yellow */
+    --info-color: #17a2b8; /* Teal */
+    --light-color: #f8f9fa; /* Light Gray */
+    --dark-color: #343a40; /* Dark Gray */
+    --white-color: #ffffff; /* White */
+    --gray-color: #6c757d; /* Gray */
+    --gray-dark-color: #343a40; /* Dark Gray */
+    --border-color: #dee2e6; /* Light Border */
 }
 
 
