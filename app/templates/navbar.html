@@ -24,6 +24,15 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('equipment.equipment_master') }}">Equipment Master</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('equipment.pending_maintenance') }}">
+                        <i class="bi bi-clock-history"></i>
+                        Pending Maintenance
+                        {% if records|length > 0 %}
+                        <span class="badge bg-danger">{{ records|length }}</span>
+                        {% endif %}
+                    </a>
+                </li>
             </ul>
             {% endif %}
             <!-- Page Title -->

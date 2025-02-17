@@ -318,3 +318,18 @@ def active_records():
         MaintenanceRecord.current_status.in_(['pending', 'received', 'in_progress','completed','sending'])
     ).order_by(MaintenanceRecord.maintenance_date.desc()).all()
     return render_template('equipment/active_records.html', records=active_maintenance)
+
+@equipment_bp.route('/pending')
+@login_required
+def pending_maintenance():
+    # Get equipment with pending maintenance
+    pending_equipment = Equipment.get_pending_maintenance()
+    formstatus=MaintenanceStatusForm()
+    # Or get pending maintenance records
+    pending_records = MaintenanceRecord.get_pending_records()
+    
+    return render_template(
+        'equipment/pending_list.html',
+        equipment_list=pending_equipment,
+        maintenance_records=pending_records,formstatus=formstatus
+    )

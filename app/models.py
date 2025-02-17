@@ -92,6 +92,47 @@ class Equipment(db.Model):
                 isactive=True
             ).first()
 
+    @staticmethod
+    def get_pending_maintenance():
+        """
+        Returns all equipment with active maintenance records where the latest status is pending.
+        """
+        return Equipment.query.join(
+            MaintenanceRecord,
+            Equipment.sn == MaintenanceRecord.equipment_sn
+        ).join(
+            MaintenanceStatus,
+            MaintenanceStatus.maintenance_id == MaintenanceRecord.id
+        ).filter(
+            MaintenanceRecord.isactive == True,
+            MaintenanceStatus.id.in_(
+                db.session.query(
+                    db.func.max(MaintenanceStatus.id)
+                ).group_by(
+                    MaintenanceStatus.maintenance_id
+                )
+            ),
+            MaintenanceStatus.status == 'pending'
+        ).order_by(
+            MaintenanceStatus.status_date.desc()
+        ).all()
+
+    def has_pending_maintenance(self):
+        """
+        Checks if equipment has an active maintenance record with pending status.
+        """
+        latest_maintenance = self.maintenance_records.filter(
+            MaintenanceRecord.isactive == True
+        ).first()
+        
+        if latest_maintenance:
+            latest_status = latest_maintenance.status_updates.order_by(
+                MaintenanceStatus.status_date.desc()
+            ).first()
+            return latest_status.status == 'pending' if latest_status else True
+        
+        return False
+
 class MaintenanceRecord(db.Model):
     __tablename__ = "maintenance_record"
 
@@ -127,6 +168,33 @@ class MaintenanceRecord(db.Model):
     def set_closed(self):
         self.isactive = False
         db.session.commit()
+
+    @property
+    def current_status(self):
+        """
+        Returns the current status of the maintenance record.
+        """
+        latest = MaintenanceStatus.query.filter_by(
+            maintenance_id=self.id
+        ).order_by(
+            MaintenanceStatus.status_date.desc()
+        ).first()
+        return latest.status if latest else 'pending'
+
+    @staticmethod
+    def get_pending_records():
+        """
+        Returns all active maintenance records with pending status.
+        """
+        return MaintenanceRecord.query.join(
+            MaintenanceStatus,
+            MaintenanceStatus.maintenance_id == MaintenanceRecord.id
+        ).filter(
+            MaintenanceRecord.isactive == True,
+            MaintenanceStatus.status == 'pending'
+        ).order_by(
+            MaintenanceStatus.status_date.desc()
+        ).all()
 
 class MaintenanceStatus(db.Model):
     __tablename__ = 'maintenance_status'
