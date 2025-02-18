@@ -41,12 +41,9 @@
                                        class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View
                                     </a>
-                                    <a href="{{ url_for('equipment.update_status', id=record.id) }}" 
-                                       class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-pencil"></i> Update
-                                    </a>
-                                    <button class="btn btn-sm btn-success me-2" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ record.id }}">
-                                        <i class="bi bi-arrow-clockwise me-1"></i> Update
+                                  
+                                    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ record.id }}">
+                                        <i class="bi bi-pencil"></i> take action
                                       </button>
                                 </div>
                             </td>

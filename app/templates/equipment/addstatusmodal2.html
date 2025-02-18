@@ -3,7 +3,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addStatusModalLabel">Add Maintenance Status</h5>
+                <h5 class="modal-title" id="addStatusModalLabel">Maintenance action</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="POST" id="statusForm" action="{{ url_for('equipment.update_status', id=record.id) }}">
@@ -15,7 +15,7 @@
                     
 
                     <div class="mb-3">
-                        {{ formstatus.status.label }}
+                        action
                         {{ formstatus.status(class="form-control") }}
                     </div>
 

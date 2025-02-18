@@ -323,7 +323,7 @@ def active_records():
 @login_required
 def pending_maintenance():
     # Get equipment with pending maintenance
-    pending_equipment = Equipment.get_pending_maintenance()
+    pending_equipment = Equipment.get_equipment_with_pending()
     formstatus=MaintenanceStatusForm()
     # Or get pending maintenance records
     pending_records = MaintenanceRecord.get_pending_records()

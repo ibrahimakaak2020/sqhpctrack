@@ -116,6 +116,32 @@ class Equipment(db.Model):
         ).order_by(
             MaintenanceStatus.status_date.desc()
         ).all()
+        
+    from sqlalchemy.orm import aliased
+    @staticmethod
+    def get_equipment_with_pending():
+        # Alias for the MaintenanceStatus table to get the latest status
+        latest_status_subquery = db.session.query(
+            MaintenanceStatus.maintenance_id,
+            db.func.max(MaintenanceStatus.id).label('latest_status_id')
+        ).group_by(MaintenanceStatus.maintenance_id).subquery()
+        print(latest_status_subquery)
+        print('----------------------------------------------------------------')
+
+        # Join Equipment -> MaintenanceRecord -> MaintenanceStatus (using subquery to get the latest status)
+        equipment_with_pending_status = db.session.query(Equipment).join(
+            MaintenanceRecord, MaintenanceRecord.equipment_sn == Equipment.sn
+        ).join(
+            latest_status_subquery, latest_status_subquery.c.maintenance_id == MaintenanceRecord.id
+        ).join(
+            MaintenanceStatus, MaintenanceStatus.id == latest_status_subquery.c.latest_status_id
+        ).filter(
+            MaintenanceRecord.isactive == True,  # Maintenance is active
+            MaintenanceStatus.status == 'pending'  # Last status is 'pending'
+        ).all()
+
+        return equipment_with_pending_status
+
 
     def has_pending_maintenance(self):
         """

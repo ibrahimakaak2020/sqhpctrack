@@ -261,57 +261,100 @@
     margin-bottom: 15px;
 }
 
+/* Pending status - waiting for action */
 .timeline .status-pending {
     background-color: #fff3cd;
     border-left: 4px solid #ffc107;
+    color: #856404;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* In Progress status - task or action is actively being worked on */
 .timeline .status-in_progress {
     background-color: #cfe2ff;
     border-left: 4px solid #0d6efd;
+    color: #004085;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* Completed status - task or action is finished successfully */
 .timeline .status-completed {
     background-color: #d1e7dd;
     border-left: 4px solid #198754;
+    color: #0f5132;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* Cancelled status - task or action has been cancelled */
 .timeline .status-cancelled {
     background-color: #f8d7da;
     border-left: 4px solid #dc3545;
+    color: #721c24;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
+    text-decoration: line-through;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+    cursor: pointer;
 }
 
+.timeline .status-cancelled:hover {
+    opacity: 1;
+}
+
+/* Rescheduled status - task or action has been rescheduled */
 .timeline .status-rescheduled {
     background-color: #ffebee;
     border-left: 4px solid #ffc107;
+    color: #856404;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* Sended status - task or action has been sent */
 .timeline .status-sended {
     background-color: #f8d7da;
     border-left: 4px solid #dc3545;
+    color: #721c24;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* Received status - task or action has been received */
 .timeline .status-received {
     background-color: #d1e7dd;
     border-left: 4px solid #198754;
+    color: #0f5132;
+    font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
 
+/* Closed status - task or action is closed */
 .timeline .status-closed {
     background-color: #9a9696;
     border-left: 4px solid #6c757d;
     color: #fff;
     font-weight: 600;
+    padding: 8px;
+    text-transform: uppercase;
 }
+
+/* Adjust the opacity for a closed/cancelled state */
 .timeline .status-cancelled {
-    background-color: #434242;
-    border-left: 4px solid #6c757d;
-    color: #fff;
-    font-weight: 600;
-    text-decoration: line-through;
     opacity: 0.6;
     transition: opacity 0.2s;
-    cursor: pointer;
-    &:hover {
-        opacity: 1;
-    }
+}
+
+.timeline .status-cancelled:hover {
+    opacity: 1;
 }
