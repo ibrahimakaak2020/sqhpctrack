@@ -1,19 +1,24 @@
 from datetime import datetime, timezone
 from flask_login import UserMixin
+import pytz
 from app.db.database import db, login_manager
 from werkzeug.security import generate_password_hash, check_password_hash
 from sqlalchemy import event, ForeignKey
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship
-
+def get_muscat_time():
+    """Returns current time in Muscat timezone"""
+    muscat_tz = pytz.timezone('Asia/Muscat')
+    utc_now = datetime.now(timezone.utc)
+    return utc_now.astimezone(muscat_tz)
 class User(db.Model, UserMixin):
     __tablename__ = "user"
     staffno = db.Column( db.String(80), unique=True, nullable=False, primary_key=True, index=True)
     staffname = db.Column(db.String(80), nullable=False)
     isadmin = db.Column(db.Boolean, default=False)
     password_hash = db.Column(db.String(128), nullable=False)
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
-    updated_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=get_muscat_time)
+    updated_at = db.Column(db.DateTime, default=get_muscat_time, onupdate=get_muscat_time)
 
     def get_id(self):
         return str(self.staffno)
@@ -61,7 +66,7 @@ class Equipment(db.Model):
     locname = db.Column(db.String(100), nullable=False)
     building = db.Column(db.String(100), nullable=False)
     note = db.Column(db.String(200))
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    created_at = db.Column(db.DateTime, default=get_muscat_time)
     created_by = db.Column(db.String(80), db.ForeignKey('user.staffno'), nullable=False)
     def __repr__(self):
         """
@@ -166,7 +171,7 @@ class MaintenanceRecord(db.Model):
     equipment_sn = db.Column(db.String(50), db.ForeignKey('equipment.sn'), nullable=False)
     
     registered_by = db.Column(db.Integer, db.ForeignKey('user.staffno'), nullable=False)
-    maintenance_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    maintenance_date = db.Column(db.DateTime, default=get_muscat_time)
     isactive = db.Column(db.Boolean, default=True)
     problem_description = db.Column(db.Text, nullable=False)
 
@@ -229,7 +234,7 @@ class MaintenanceStatus(db.Model):
     maintenance_id = db.Column(db.Integer, db.ForeignKey('maintenance_record.id'), nullable=False)
     company_id = db.Column(db.Integer, db.ForeignKey('companyuser.cid'))
     workshop_id = db.Column(db.Integer, db.ForeignKey('workshop.id'))
-    status_date = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc))
+    status_date = db.Column(db.DateTime, default=get_muscat_time)
     status = db.Column(db.String(20), nullable=False)
     is_external = db.Column(db.Boolean, nullable=False, default=False)
     notes = db.Column(db.Text)
@@ -288,3 +293,24 @@ def set_maintenance_inactive(mapper, connection, target):
 #event.listen(Equipment, 'before_insert', log_equipment_creation)
 #event.listen(MaintenanceRecord, 'before_insert', check_active_maintenance)
 #event.listen(MaintenanceStatus, 'before_insert', set_maintenance_inactive)
+
+def get_equipment_with_pending_status():
+    # Alias for the MaintenanceStatus table to get the latest status
+    latest_status_subquery = db.session.query(
+        MaintenanceStatus.maintenance_id,
+        db.func.max(MaintenanceStatus.id).label('latest_status_id')
+    ).group_by(MaintenanceStatus.maintenance_id).subquery()
+
+    # Query Equipment -> MaintenanceRecord -> Latest MaintenanceStatus
+    equipment_with_pending_status = db.session.query(Equipment).join(
+        MaintenanceRecord, MaintenanceRecord.equipment_sn == Equipment.sn
+    ).join(
+        latest_status_subquery, latest_status_subquery.c.maintenance_id == MaintenanceRecord.id
+    ).join(
+        MaintenanceStatus, MaintenanceStatus.id == latest_status_subquery.c.latest_status_id
+    ).filter(
+        MaintenanceRecord.isactive == True,  # Active maintenance
+        MaintenanceStatus.status == 'pending'  # Latest status is 'pending'
+    ).all()
+
+    return equipment_with_pending_status

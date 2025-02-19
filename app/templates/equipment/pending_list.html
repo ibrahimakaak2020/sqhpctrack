@@ -24,20 +24,20 @@
                     <tbody>
                         {% for record in maintenance_records %}
                         <tr>
-                            <td>{{ record.equipment_rel.model_name }}</td>
+                            <td>{{ record.model_name }}</td>
                             <td>{{ record.equipment_sn }}</td>
                             <td>
                                 <small class="text-muted">
                                     <i class="bi bi-geo-alt"></i>
-                                    {{ record.equipment_rel.locname }}
-                                    <br>{{ record.equipment_rel.building }}
+                                    {{ record.locname }}
+                                    <br>{{ record.building }}
                                 </small>
                             </td>
-                            <td>{{ record.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td>{{ record.problem_description|truncate(100) }}</td>
+                            <td>{{ record.maintenance_records[0].maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ record.maintenance_records[0].problem_description|truncate(100) }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ url_for('equipment.record_detail', record_id=record.id) }}" 
+                                    <a href="{{ url_for('equipment.read', sn=record.sn) }}" 
                                        class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View
                                     </a>

@@ -7,7 +7,7 @@ from wtforms import FloatField, SelectField, SubmitField, TextAreaField
 from app.forms.equipmentforms import AddEquipmentForm, AddMaintenanceForm
 from app.forms.maintenancerecordform import MaintenanceRecordForm
 from app.forms.maintenancestatus import MaintenanceStatusForm
-from app.models import CompanyUser, Equipment, MaintenanceRecord, MaintenanceStatus, User, Workshop
+from app.models import CompanyUser, Equipment, MaintenanceRecord, MaintenanceStatus, User, Workshop, get_equipment_with_pending_status
 from app import db
 from app.utils.decorators import admin_required
 from wtforms.validators import DataRequired, Length, Regexp, ValidationError
@@ -93,10 +93,31 @@ def update_equipment(sn):
 @login_required
 @admin_required
 def delete_equipment(sn):
-    equipment = Equipment.query.get_or_404(sn)
-    db.session.delete(equipment)
-    db.session.commit()
-    flash('Equipment deleted successfully!', 'success')
+    try:
+        equipment = Equipment.query.get_or_404(sn)
+        
+        # First, get all maintenance records for this equipment
+        maintenance_records = MaintenanceRecord.query.filter_by(equipment_sn=sn).all()
+        
+        # Delete all associated status updates and maintenance records
+        for record in maintenance_records:
+            # Delete status updates for this maintenance record
+            MaintenanceStatus.query.filter_by(maintenance_id=record.id).delete()
+            # Delete the maintenance record
+            db.session.delete(record)
+        
+        # Now delete the equipment
+        db.session.delete(equipment)
+        db.session.commit()
+        
+        flash('Equipment and all associated records deleted successfully!', 'success')
+        logger.info(f'Equipment {sn} deleted by user {current_user.staffno}')
+        
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f'Error deleting equipment {sn}: {str(e)}')
+        flash(f'Error deleting equipment: {str(e)}', 'danger')
+    
     return redirect(url_for('equipment.equipment_master'))
 
 
@@ -323,7 +344,7 @@ def active_records():
 @login_required
 def pending_maintenance():
     # Get equipment with pending maintenance
-    pending_equipment = Equipment.get_equipment_with_pending()
+    pending_equipment = get_equipment_with_pending_status()
     formstatus=MaintenanceStatusForm()
     # Or get pending maintenance records
     pending_records = MaintenanceRecord.get_pending_records()
@@ -331,5 +352,5 @@ def pending_maintenance():
     return render_template(
         'equipment/pending_list.html',
         equipment_list=pending_equipment,
-        maintenance_records=pending_records,formstatus=formstatus
+        maintenance_records=pending_equipment,formstatus=formstatus
     )
