@@ -69,24 +69,12 @@ class Equipment(db.Model):
     created_at = db.Column(db.DateTime, default=get_muscat_time)
     created_by = db.Column(db.String(80), db.ForeignKey('user.staffno'), nullable=False)
     def __repr__(self):
-        """
-        Returns a string representation of the Equipment object.
-
-        The string representation includes the model name and serial number of the equipment.
-
-        Parameters:
-        None
-
-        Returns:
-        str: A string representation of the Equipment object in the format '<Equipment {model_name} (SN: {sn})>'.
-        """
+     
         return f'<Equipment {self.model_name} (SN: {self.sn})>'
         # Relationships
     creator = db.relationship('User', backref=db.backref('created_equipment', lazy=True))
     maintenance_records = db.relationship('MaintenanceRecord', back_populates='equipment_rel', overlaps='equipment_ref')
-
-    def __repr__(self):
-            return f'<Equipment {self.model_name} (SN: {self.sn})>'
+    @property
     def get_active_maintenance(self):
             """
             Returns the active maintenance record for this equipment, if any.
@@ -130,9 +118,7 @@ class Equipment(db.Model):
             MaintenanceStatus.maintenance_id,
             db.func.max(MaintenanceStatus.id).label('latest_status_id')
         ).group_by(MaintenanceStatus.maintenance_id).subquery()
-        print(latest_status_subquery)
-        print('----------------------------------------------------------------')
-
+        
         # Join Equipment -> MaintenanceRecord -> MaintenanceStatus (using subquery to get the latest status)
         equipment_with_pending_status = db.session.query(Equipment).join(
             MaintenanceRecord, MaintenanceRecord.equipment_sn == Equipment.sn

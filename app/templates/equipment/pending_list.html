@@ -22,27 +22,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for record in maintenance_records %}
+                        {% for active_maintenance in pinding_equipments %}
                         <tr>
-                            <td>{{ record.model_name }}</td>
-                            <td>{{ record.equipment_sn }}</td>
+                            <td>{{ active_maintenance.model_name }}</td>
+                            <td>{{ active_maintenance.sn }}</td>
                             <td>
                                 <small class="text-muted">
                                     <i class="bi bi-geo-alt"></i>
-                                    {{ record.locname }}
-                                    <br>{{ record.building }}
+                                    {{ active_maintenance.locname }}
+                                    <br>{{ active_maintenance.building }}
                                 </small>
                             </td>
-                            <td>{{ record.maintenance_records[0].maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                            <td>{{ record.maintenance_records[0].problem_description|truncate(100) }}</td>
+                            <td>{{ active_maintenance.maintenance_records[0].maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td>{{ active_maintenance.maintenance_records[0].problem_description|truncate(100) }}</td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ url_for('equipment.read', sn=record.sn) }}" 
+                                    <a href="{{ url_for('equipment.read', sn=active_maintenance.sn) }}" 
                                        class="btn btn-sm btn-outline-primary">
                                         <i class="bi bi-eye"></i> View
                                     </a>
                                   
-                                    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ record.id }}">
+                                    <button class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#addStatusModal" data-id="{{ active_maintenance.id }}">
                                         <i class="bi bi-pencil"></i> take action
                                       </button>
                                 </div>

@@ -3,10 +3,9 @@
 
 {% block content %}
 
-
 <!-- Equipment Details Card -->
 <div class="card mx-4 shadow-sm border color-scheme-metallic">
-    <div class="card-header color-scheme-raspberry d-flex justify-content-between align-items-center">
+    <div class="card-header color-scheme-raspberry d-flex justify-content-between align-items-center sticky-top">
         <h3 class="card-title mb-0">Equipment Details</h3>
         <a href="{{ url_for('equipment.equipment_master') }}" class="btn btn-light btn-sm">
             <i class="bi bi-arrow-left"></i> Back to List
@@ -105,7 +104,6 @@
     </div>
 
 <!-- Maintenance History Card -->
-<!-- Maintenance History Card -->
 <div class="accordion" id="equipmentAccordion">
     <div class="accordion-item">
         <h2 class="accordion-header" id="headingOne">
@@ -144,7 +142,6 @@
                                 </thead>
                                 <tbody>
                                     {% for maintenance in equipment.maintenance_records|sort(attribute='maintenance_date', reverse=true) %}
-                                   
                                     <tr class="maintenance-record {% if maintenance.isactive %}active-record{% else %}closed-record{% endif %}">
                                         <td>{{ maintenance.maintenance_date.strftime('%Y-%m-%d %H:%M') }}</td>
                                         <td>
@@ -203,8 +200,6 @@
 </div>
 
 <!-- Modals -->
-
-
 {% for maintenance in equipment.maintenance_records %}
 <!-- Status History Modal -->
 <div class="modal fade" id="statusModal-{{ maintenance.id }}" tabindex="-1">
@@ -216,12 +211,11 @@
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body modal-dialog-scrollable " style="max-height: 60vh; overflow-y: auto;" >
-                <ul class="timeline" >
+            <div class="modal-body modal-dialog-scrollable " style="max-height: 60vh; overflow-y: auto;">
+                <ul class="timeline">
                     {% for status in maintenance.status_updates|sort(attribute='status_date', reverse=true) %}
-                   
                     <li class="event mb-4 status-{{ status.status|lower }}">
-                        <div class="d-flex ">
+                        <div class="d-flex">
                             <div class="flex-grow-1">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <h6 class="mb-0 text-capitalize">{{ status.status }}</h6>
@@ -260,6 +254,7 @@
 </div>
 {% endfor %}
 </div>
+
 <!-- JavaScript for Filtering and Exporting -->
 <script>
     // Filter Table by Search and Status
@@ -302,6 +297,8 @@
         downloadLink.href = URL.createObjectURL(csvFile);
         downloadLink.click();
     }
+
+    // Event listener for external/internal status toggle
     document.getElementById('is_external').addEventListener('change', function() {
         if (this.checked) {
             document.getElementById('external-status').style.display = 'block';

@@ -348,9 +348,9 @@ def pending_maintenance():
     formstatus=MaintenanceStatusForm()
     # Or get pending maintenance records
     pending_records = MaintenanceRecord.get_pending_records()
+    pending_equipment1=Equipment.get_equipment_with_pending()
     
     return render_template(
         'equipment/pending_list.html',
-        equipment_list=pending_equipment,
-        maintenance_records=pending_equipment,formstatus=formstatus
+        pinding_equipments=pending_equipment,formstatus=formstatus
     )
