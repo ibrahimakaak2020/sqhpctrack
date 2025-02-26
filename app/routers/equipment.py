@@ -212,6 +212,8 @@ def record_detail(record_id):
 @login_required
 def update_status(id):
     record = MaintenanceRecord.query.get_or_404(id)
+    print(record)
+    print('Status updated --------------------------------')
     formstatus = MaintenanceStatusForm()
     
     if formstatus.validate_on_submit():
@@ -345,6 +347,8 @@ def active_records():
 def pending_maintenance():
     # Get equipment with pending maintenance
     pending_equipment = get_equipment_with_pending_status()
+    print(pending_equipment)
+    print('-'*50)
     formstatus=MaintenanceStatusForm()
     # Or get pending maintenance records
     pending_records = MaintenanceRecord.get_pending_records()

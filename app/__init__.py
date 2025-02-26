@@ -17,7 +17,7 @@ def create_app(config_name='default'):
     # Database Configuration
     app.config['SQLALCHEMY_DATABASE_URI'] = Config.SQLALCHEMY_DATABASE_URI
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['SQLALCHEMY_ECHO'] = True  # Set to False in production
+    #app.config['SQLALCHEMY_ECHO'] = True  # Set to False in production
     
     # Security configurations
     app.config.update(
