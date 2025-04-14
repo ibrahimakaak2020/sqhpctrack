@@ -16,7 +16,7 @@ env.bak/
 venv.bak/
 
 # Flask specific
-instance/
+
 .webassets-cache
 
 # PyInstaller
